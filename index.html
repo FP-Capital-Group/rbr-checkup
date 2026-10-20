@@ -781,7 +781,10 @@ function renderQ(){
   }
   renderReceipt();
 }
-function advance(){ if(qi<Q.length-1){qi++;renderQ();} else { document.getElementById('progBar').style.width='100%'; setTimeout(scan, reduce?0:300);} }
+function advance(){
+  const pb=document.getElementById('progBar'); if(!pb || pb.dataset.done) return;
+  if(qi<Q.length-1){qi++;renderQ();} else { pb.dataset.done='1'; pb.style.width='100%'; setTimeout(scan, reduce?0:300);}
+}
 document.addEventListener('keydown',e=>{
   if(!document.getElementById('qbody')) return;
   const q=Q[qi];
