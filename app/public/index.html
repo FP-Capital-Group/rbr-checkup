@@ -566,7 +566,8 @@ const cfgReady=(location.protocol.startsWith('http')&&!/github\.io$|claude|claud
   : Promise.resolve(CFG);
 try{ const q=new URLSearchParams(location.search); ['utm_source','utm_medium','utm_campaign','utm_content','fbclid','gclid'].forEach(k=>{const v=q.get(k); if(v) S.utm[k.replace('utm_','')]=v.slice(0,120);}); }catch(e){}
 const uuid=()=>(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2));
-function track(ev,data){ try{ if(window.fbq) fbq('track',ev,data||{}); if(window.gtag) gtag('event',ev==='Lead'?'generate_lead':ev,data||{}); }catch(e){} }
+function track(ev,data,eventID){ try{ if(window.fbq) fbq('track',ev,data||{},eventID?{eventID}:undefined); if(window.gtag) gtag('event',ev==='Lead'?'generate_lead':ev,data||{}); }catch(e){} }
+const cookieVal=n=>{ try{ return (document.cookie.split('; ').find(x=>x.startsWith(n+'='))||'').split('=')[1]||null; }catch(e){ return null; } };
 // consenso cookie: Pixel e Analytics si caricano solo dopo «Accetta»
 const CK='rbr_ck';
 function getConsent(){ try{ return localStorage.getItem(CK); }catch(e){ return null; } }
@@ -1270,8 +1271,9 @@ function report(){
     S.lead={nome:f.n.value.trim(),tel:f.t.value.trim(),email:f.m.value.trim()};
     if(CFG.live && !S.demo){
       const btn=form.querySelector('button[type=submit]'); btn.disabled=true; btn.textContent='Un attimo…';
-      try{ await fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...S.lead,website:form.querySelector('#g-web').value,t:gateT0,locale:S.online?.name||S.nome,citta:S.online?.city||S.citta,utm:S.utm,report:S.reportData})}); }catch(err){}
-      track('Lead',{content_name:'checkup-ristorante'});
+      const eventId='lead-'+uuid();
+      try{ await fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...S.lead,website:form.querySelector('#g-web').value,t:gateT0,locale:S.online?.name||S.nome,citta:S.online?.city||S.citta,utm:S.utm,report:S.reportData,eventId,consenso:getConsent()==='si',fbp:cookieVal('_fbp'),fbc:cookieVal('_fbc')||(S.utm.fbclid?`fb.1.${Date.now()}.${S.utm.fbclid}`:null),pagina:location.href.split('#')[0]})}); }catch(err){}
+      track('Lead',{content_name:'checkup-ristorante'},eventId);
     }
     unlock();
   });
@@ -1399,7 +1401,12 @@ function timelineSVG(cum){
 
 /* ---------- Prenotazione ---------- */
 function book(){
-  if(CFG.booking){ window.open(CFG.booking,'_blank','noopener'); return; }
+  if(CFG.booking){
+    const L=S.lead||{}, p=(L.nome||'').trim().split(/\s+/), q=new URLSearchParams();
+    if(p[0]) q.set('first_name',p[0]); if(p.length>1) q.set('last_name',p.slice(1).join(' ')); if(L.email) q.set('email',L.email); if(L.tel) q.set('phone',L.tel);
+    track('Schedule',{content_name:'checkup-call'});
+    window.open(CFG.booking+(q.toString()?(CFG.booking.includes('?')?'&':'?')+q:''),'_blank','noopener'); return;
+  }
   if(CFG.live){ if(S.lead) toast('Ti scriviamo su WhatsApp entro 24 ore per fissare la call.'); else { const g=document.getElementById('g-nome'); if(g){ g.scrollIntoView({behavior:'smooth',block:'center'}); g.focus(); } else toast('Fai il check-up: alla fine ti proponiamo la call.'); } return; }
   if(document.getElementById('bookBox')) return;
   const box=h(`<div class="gate" id="bookBox" style="position:fixed;background:rgba(20,17,18,.45);padding:20px;align-items:center;z-index:60">

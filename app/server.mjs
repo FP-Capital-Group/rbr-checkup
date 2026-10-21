@@ -77,7 +77,7 @@ const server = http.createServer(async (req, res) => {
       if (b.website) return send(res, 200, { ok: true });              // campo trappola compilato: è un bot
       if (b.t && Date.now() - Number(b.t) < 2500) return send(res, 200, { ok: true });
       if (!b.nome || String(b.tel || '').replace(/\D/g, '').length < 9) return send(res, 400, { error: 'nome e cellulare servono' });
-      const out = await saveLead(b);
+      const out = await saveLead(b, { ip, ua: req.headers['user-agent'] || '' });
       console.log('lead', new Date().toISOString(), b.locale, out);
       return send(res, 200, { ok: true, ...out });
     }
