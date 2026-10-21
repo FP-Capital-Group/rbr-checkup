@@ -44,6 +44,7 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/healthz') return send(res, 200, { ok: true, google: hasGoogle() });
     if (url.pathname === '/api/config') return send(res, 200, {
       live: hasGoogle(), pixel: process.env.META_PIXEL_ID || null, ga4: process.env.GA4_ID || null, booking: process.env.BOOKING_URL || null,
+      privacy: process.env.PRIVACY_URL || 'https://www.iubenda.com/privacy-policy/57175682/legal',
     });
     if (url.pathname === '/api/places') {
       const q = (url.searchParams.get('q') || '').trim().slice(0, 80);
