@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Check-up Ristorante · Presentazione</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Presentazione interna: colonna unica 1000px, sezioni numerate solo dove c'è una sequenza vera */
+:root{--paper:#F5F3F3;--surface:#fff;--sunk:#EDE9E9;--ink:#141112;--muted:#6E6466;--line:#E3DCDC;--red:#D90A0F;--red-ink:#B5080C;--red-soft:#FBE5E5;--good:#1D8048;--good-soft:#E2F2E8;--warn:#C27800;--warn-soft:#FBF0DA;
+--f-d:"Archivo","Arial Black",Arial,sans-serif;--f-b:"Hanken Grotesk",Arial,sans-serif;--f-m:"IBM Plex Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root{--paper:#121011;--surface:#1C1819;--sunk:#252021;--ink:#F3EEEE;--muted:#A99FA1;--line:#2F2829;--red:#FF3A3F;--red-ink:#FF6B6E;--red-soft:#3A1517;--good:#45C47C;--good-soft:#15301F;--warn:#F2AE3A;--warn-soft:#33270F;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-b);font-size:17px;line-height:1.55}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px}
+h1,h2,h3{font-family:var(--f-d);margin:0;letter-spacing:-.03em;text-wrap:balance}
+.top{display:flex;justify-content:space-between;align-items:center;padding-block:20px;gap:12px}
+.brand{font-family:var(--f-d);font-weight:800;font-size:13px;line-height:1.05}.brand span{display:block;color:var(--red)}.brand .b{color:var(--ink)}
+.date{font-family:var(--f-m);font-size:12px;color:var(--muted)}
+.eb{font-family:var(--f-m);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--red-ink);font-weight:600}
+section{padding-block:40px;border-top:1px solid var(--line)}
+.hero{border:0;padding-block:40px 50px}
+.hero h1{font-size:clamp(36px,6vw,66px);font-weight:800;font-stretch:108%;line-height:.98;margin-top:14px;max-width:15ch}
+.hero h1 em{font-style:normal;color:var(--red)}
+.lead{color:var(--muted);font-size:clamp(17px,1.8vw,20px);max-width:60ch;margin:18px 0 0}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.btn{display:inline-flex;gap:10px;align-items:center;border-radius:14px;padding:14px 22px;font-weight:700;text-decoration:none}
+.btn.red{background:var(--red);color:#fff}.btn.ghost{border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+h2{font-size:clamp(26px,3.4vw,36px);font-weight:800}
+.sub{color:var(--muted);margin:8px 0 0;max-width:64ch}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0}
+.box h3{font-size:19px;font-weight:800}.box p{margin:6px 0 0;color:var(--muted);font-size:15px}
+.flow{list-style:none;padding:0;margin:24px 0 0;display:flex;flex-direction:column;gap:10px;counter-reset:f}
+.flow li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;counter-increment:f}
+.flow li::before{content:counter(f);width:34px;height:34px;border-radius:10px;background:var(--red-soft);color:var(--red-ink);display:grid;place-items:center;font-family:var(--f-m);font-weight:600}
+.flow b{display:block;font-family:var(--f-d);font-size:18px;letter-spacing:-.015em}.flow p{margin:4px 0 0;color:var(--muted);font-size:15px}
+.flow .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tag{font-family:var(--f-m);font-size:11.5px;border-radius:6px;padding:2px 8px;background:var(--sunk);color:var(--muted)}
+.ok{list-style:none;padding:0;margin:20px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 22px}
+.ok li{display:flex;gap:10px;align-items:flex-start;font-size:15.5px}
+.ok li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;background:var(--good-soft);color:var(--good);display:grid;place-items:center;font-weight:800;font-size:12px;margin-top:1px}
+.todo li::before{content:"!";background:var(--warn-soft);color:var(--warn)}
+.ads{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
+.ads figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.ads img{display:block;width:100%;height:auto}
+.ads figcaption{padding:12px 14px;font-size:14px;color:var(--muted)}.ads figcaption b{color:var(--ink);display:block}
+table{width:100%;border-collapse:collapse;margin-top:18px;font-size:15.5px}
+td{padding:12px 6px;border-bottom:1px solid var(--line);vertical-align:top}td:first-child{padding-left:0;font-weight:600}
+td:last-child{text-align:right;font-family:var(--f-m);font-size:14px;white-space:nowrap}
+td small{display:block;color:var(--muted);font-weight:400;font-size:13.5px}
+.kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:20px}
+.kpi div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.kpi b{font-family:var(--f-d);font-size:18px;display:block}.kpi small{color:var(--muted);font-size:13.5px}
+.sign{padding-block:34px 56px;color:var(--muted);font-size:14px}.sign b{display:block;color:var(--ink);font-family:var(--f-d);font-size:18px}
+@media (max-width:760px){.grid2,.ok,.ads,.kpi{grid-template-columns:1fr}.kpi{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><div class="brand"><span>Restaurant</span><span class="b">Business</span><span>Revolution</span></div><span class="date">Presentazione interna · ottobre 2026</span></header>
+
+  <section class="hero">
+    <div class="eb">Per Roberto</div>
+    <h1>Il Check-up Ristorante è <em>pronto</em></h1>
+    <p class="lead">Un check-up gratuito che legge la presenza online vera del locale e i suoi numeri, dà un voto su 100, dice quanti soldi perde al mese e porta il ristoratore a prenotare una call con noi. Ogni contatto arriva in GHL già qualificato.</p>
+    <div class="btns">
+      <a class="btn red" href="/" target="_blank" rel="noopener">Provalo con un locale vero →</a>
+      <a class="btn ghost" href="#giro">Come funziona</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cosa abbiamo preso da Owner.com</h2>
+    <p class="sub">Owner (USA) ha costruito il suo grader così e ci fa una grossa parte dei contatti. L'abbiamo studiato dal vivo.</p>
+    <div class="grid2">
+      <div class="box"><h3>La scansione parte subito</h3><p>Owner lavora in circa 14 secondi e mostra 45 secondi di animazione. Noi facciamo partire la scansione appena si sceglie il locale: gira mentre il ristoratore risponde alle domande.</p></div>
+      <div class="box"><h3>Il report si vede, ma è bloccato</h3><p>Il punteggio è libero. Il dettaglio si sblocca con nome, cellulare ed email: così il contatto lo lascia volentieri.</p></div>
+      <div class="box"><h3>Una cifra che fa muovere</h3><p>«Stai lasciando sul tavolo 8.000 € al mese». Noi la calcoliamo sui numeri del conto economico, con un tetto al 15% del fatturato per restare credibili.</p></div>
+      <div class="box"><h3>Mai dare voti a caso</h3><p>Owner è stato citato in giudizio per voti bassi dati a siti che non riusciva a leggere. Da noi quello che non si legge è «non verificabile» e non conta nel punteggio.</p></div>
+    </div>
+  </section>
+
+  <section id="giro">
+    <h2>Il giro completo</h2>
+    <p class="sub">Dall'annuncio alla call. Tutto automatico, già collegato e provato.</p>
+    <ol class="flow">
+      <li><div><b>Annuncio su Facebook e Instagram</b><p>3 versioni (margine, food cost, Google Maps), feed e storie. Ogni annuncio ha il suo link tracciato.</p><div class="tags"><span class="tag">campagna in pausa</span><span class="tag">30 €/giorno di test</span></div></div></li>
+      <li><div><b>Il ristoratore cerca il suo locale</b><p>Suggerimenti di Google: lo trova in 3 lettere. In quel momento parte la scansione.</p></div></li>
+      <li><div><b>Scansione vera</b><p>Scheda Google (voto, recensioni, orari), posizione su Maps con i concorrenti veri, sito (https, prenotazione, Pixel, Analytics, delivery), velocità da telefono, Instagram.</p><div class="tags"><span class="tag">Google 0,5 s</span><span class="tag">tutto in ~25 s</span></div></div></li>
+      <li><div><b>10 domande sul conto economico</b><p>Incasso, scontrino, fornitori, personale, affitto, costi fissi, marketing, controllo dei numeri, schede piatti, database clienti.</p></div></li>
+      <li><div><b>Report con punteggio e simulatore</b><p>Voto su 100 in 4 aree, problemi in € al mese, cascata del conto economico, «quanto ti possiamo portare».</p></div></li>
+      <li><div><b>Contatto in GHL, subito</b><p>Sub-account FP Capital: campi commerciali compilati (fatturato, food cost, personale, problema principale), tag con fascia A/B/C, nota con il riepilogo. Il vostro automatismo assegna il venditore e apre l'opportunità in «Vendita».</p><div class="tags"><span class="tag">mail automatica al lead</span><span class="tag">avviso Telegram a Marco</span><span class="tag">evento Lead a Meta</span></div></div></li>
+      <li><div><b>Prenotazione della call</b><p>Calendario GHL «Check-up Ristorante · 30 minuti» con Google Meet, già compilato con i dati del lead.</p></div></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Gli annunci</h2>
+    <p class="sub">Testi da pari a pari, numeri concreti, una sola azione. Il metodo RBR: prima diamo valore, poi chiediamo il contatto.</p>
+    <div class="ads">
+      <figure><img src="/ads/ad1_margine_feed.png" alt="Annuncio: il tuo locale incassa, ma quanto ti resta davvero?"><figcaption><b>Margine</b>«Il tuo locale incassa. Ma quanto ti resta davvero?»</figcaption></figure>
+      <figure><img src="/ads/ad2_foodcost_feed.png" alt="Annuncio: sai qual è il food cost del tuo locale?"><figcaption><b>Food cost</b>«Sai qual è il food cost del tuo locale?»</figcaption></figure>
+      <figure><img src="/ads/ad3_maps_feed.png" alt="Annuncio: chi cerca dove mangiare sceglie tra i primi tre"><figcaption><b>Google Maps</b>«Chi cerca dove mangiare sceglie tra i primi tre.»</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cosa è già fatto</h2>
+    <ul class="ok">
+      <li>Pagina del check-up online, da telefono e computer</li>
+      <li>Scansione vera: Google, Maps, sito, velocità, Instagram</li>
+      <li>Report con punteggio, € persi e simulatore</li>
+      <li>Contatti su GHL FP Capital con campi e tag</li>
+      <li>Mail automatica al lead con riepilogo e link</li>
+      <li>Calendario GHL per la call di 30 minuti</li>
+      <li>Pixel Meta e Analytics, solo dopo il consenso cookie</li>
+      <li>Evento Lead anche dal server (Conversions API)</li>
+      <li>Campagna Meta con 3 annunci, in pausa</li>
+      <li>Antispam, controlli di sicurezza, collaudo 30/30</li>
+      <li>Avviso immediato su Telegram a ogni lead</li>
+      <li>Tutto su account FP: GitHub, Render, Google Cloud</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Quanto costa</h2>
+    <table>
+      <tr><td>Server<small>Render, account FP</small></td><td>7 $ al mese</td></tr>
+      <tr><td>Dati Google<small>gratis fino a circa 500 check-up al mese</small></td><td>poi ~8 cent l'uno</td></tr>
+      <tr><td>Velocità sito, Instagram, Meta<small>servizi gratuiti</small></td><td>0 €</td></tr>
+      <tr><td>GHL, mail, calendario<small>già nostri</small></td><td>0 €</td></tr>
+      <tr><td>Pubblicità di test<small>da decidere insieme</small></td><td>30 € al giorno</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Cosa manca per partire</h2>
+    <ul class="ok todo">
+      <li>Carta FP su Google Cloud (recensioni, foto, mappa)</li>
+      <li>Carta FP su Render per il server sempre acceso</li>
+      <li>Indirizzo checkup.restaurantbusinessrevolution.com</li>
+      <li>Messaggio WhatsApp automatico in GHL (testi pronti)</li>
+      <li>Informativa privacy estesa al check-up</li>
+      <li>Via libera su budget e pubblicazione degli annunci</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Cosa misuriamo</h2>
+    <p class="sub">Non i like: quanto ci costa arrivare a un cliente.</p>
+    <div class="kpi">
+      <div><b>Costo per contatto</b><small>spesa Meta ÷ check-up sbloccati</small></div>
+      <div><b>% che prenota</b><small>call fissate ÷ contatti</small></div>
+      <div><b>Costo per call</b><small>spesa ÷ call fatte</small></div>
+      <div><b>Costo per cliente</b><small>spesa ÷ contratti firmati</small></div>
+    </div>
+  </section>
+
+  <div class="sign"><b>Marco Cuccaro</b>Restaurant Business Revolution</div>
+</div>
+</body>
+</html>
