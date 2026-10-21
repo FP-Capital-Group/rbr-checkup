@@ -1,6 +1,28 @@
 // Google Places API (New) + Static Maps. La chiave resta sul server (GOOGLE_MAPS_KEY).
 const KEY = () => process.env.GOOGLE_MAPS_KEY || '';
-export const hasGoogle = () => !!KEY();
+const MOCK = process.env.MOCK_GOOGLE === '1';   // solo per prove in locale: dati Google finti
+export const hasGoogle = () => MOCK || !!KEY();
+
+
+// ---- dati finti per le prove in locale (MOCK_GOOGLE=1) ----
+const FAKE = {
+  id: 'fake-mp', displayName: { text: 'Mister Pizza Prova' }, formattedAddress: 'Via di Prova 1, 00100 Roma RM, Italia',
+  addressComponents: [{ longText: 'Roma', types: ['locality'] }, { longText: 'Prati', types: ['sublocality'] }],
+  location: { latitude: 41.907, longitude: 12.462 }, rating: 4.3, userRatingCount: 812,
+  regularOpeningHours: { weekdayDescriptions: ['lunedì: 12–23'] }, nationalPhoneNumber: '06 000000', websiteUri: 'https://www.misterpizza.it/',
+  editorialSummary: null, reservable: true, delivery: true, primaryType: 'pizza_restaurant', googleMapsUri: 'https://maps.google.com/?cid=1',
+  photos: Array.from({ length: 10 }, () => ({ authorAttributions: [{ displayName: 'Cliente' }] })),
+  reviews: [5, 4, 2, 5, 3].map((st, i) => ({ rating: st, relativePublishTimeDescription: `${i + 1} settimane fa`, authorAttribution: { displayName: ['Giulia R', 'Marco B', 'Luca T', 'Sara P', 'Franco M'][i] }, text: { text: 'Recensione di prova numero ' + (i + 1) + ': pizza buona, servizio da migliorare.' } })),
+};
+if (MOCK) {
+  globalThis.__mock = {
+    autocomplete: async q => [{ id: 'fake-mp', main: 'Mister Pizza Prova', sec: 'Via di Prova 1, Roma, Italia' }, { id: 'fake-2', main: q + ' (altro)', sec: 'Latina, Italia' }],
+    details: async () => FAKE,
+    findPlaceId: async () => 'fake-mp',
+    rankSearch: async q => ['Pizzeria Uno', 'Pizzeria Due', 'Pizzeria Tre', null, 'Pizzeria Cinque', 'Pizzeria Sei', 'Pizzeria Sette'].map((n, i) => n ? { id: 'c' + i, n, r: 4.7 - i * 0.1, v: 2000 - i * 200, lat: 41.9 + i * 0.002, lng: 12.46 } : { id: 'fake-mp', n: 'Mister Pizza Prova', r: 4.3, v: 812, lat: 41.907, lng: 12.462 }),
+    staticMap: async () => Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=', 'base64'),
+  };
+}
 
 const TYPES = ['restaurant', 'bar', 'cafe', 'meal_takeaway', 'bakery'];
 
@@ -17,6 +39,7 @@ async function places(path, { body, mask, method = 'POST', timeout = 8000 } = {}
 }
 
 export async function autocomplete(input, sessionToken) {
+  if (MOCK) return globalThis.__mock.autocomplete(input,sessionToken);
   const j = await places('places:autocomplete', {
     body: { input, sessionToken, languageCode: 'it', includedRegionCodes: ['it'], includedPrimaryTypes: TYPES },
     mask: 'suggestions.placePrediction.placeId,suggestions.placePrediction.structuredFormat',
@@ -35,12 +58,14 @@ const DETAIL_MASK = [
 ].join(',');
 
 export async function details(placeId, sessionToken) {
+  if (MOCK) return globalThis.__mock.details(placeId,sessionToken);
   const qs = new URLSearchParams({ languageCode: 'it', regionCode: 'IT' });
   if (sessionToken) qs.set('sessionToken', sessionToken);
   return places('places/' + encodeURIComponent(placeId) + '?' + qs, { method: 'GET', mask: DETAIL_MASK });
 }
 
 export async function findPlaceId(text) {
+  if (MOCK) return globalThis.__mock.findPlaceId(text);
   const j = await places('places:searchText', {
     body: { textQuery: text, languageCode: 'it', regionCode: 'IT', pageSize: 1 },
     mask: 'places.id',
@@ -50,6 +75,7 @@ export async function findPlaceId(text) {
 
 // Ricerca come su Maps, centrata sul locale: posizione e concorrenti
 export async function rankSearch(query, center) {
+  if (MOCK) return globalThis.__mock.rankSearch(query,center);
   const j = await places('places:searchText', {
     body: {
       textQuery: query, languageCode: 'it', regionCode: 'IT', pageSize: 20,
@@ -64,6 +90,7 @@ export async function rankSearch(query, center) {
 }
 
 export async function staticMap(center, pins) {
+  if (MOCK) return globalThis.__mock.staticMap();
   const qs = new URLSearchParams({ size: '640x400', scale: '2', maptype: 'roadmap', key: KEY(), language: 'it' });
   const style = ['feature:poi|visibility:off', 'feature:transit|visibility:off', 'element:labels.icon|visibility:off'];
   const parts = [...qs.entries()].map(([k, v]) => `${k}=${encodeURIComponent(v)}`);
