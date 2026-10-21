@@ -1,0 +1,12 @@
+# Tiene sveglio il server Render gratuito (si addormenta dopo 15 minuti senza visite).
+# Quando il servizio passa al piano Starter questo file si può cancellare.
+name: keepalive
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsS --max-time 60 https://rbr-checkup-oygk.onrender.com/healthz || true
