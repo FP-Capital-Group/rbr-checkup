@@ -1034,7 +1034,10 @@ function visDelivery(v,o){
 async function scan(){
   defaults(); document.getElementById('mobBar').hidden=true;
   if(!S.onlineP) startOnline();
-  let o=await S.onlineP;
+  // non aspetta la scansione completa: basta la scheda Google (max 12 s), il resto arriva durante l'animazione
+  const t0w=Date.now();
+  while(!(S.online&&S.online.sito) && Date.now()-t0w<12000){ if(await Promise.race([S.onlineP.then(()=>true),new Promise(r=>setTimeout(()=>r(false),400))])) break; }
+  let o=S.online;
   if(!o||!o.sito) o=S.online=(o&&o.source==='errore'&&S.online&&S.online.sito)?S.online:emptyOnline();
   const c=compute(), t=typeOf();
   const steps=['Google e concorrenti','Recensioni e risposte','Sito web e velocità','Instagram e campagne Meta','Delivery e promozioni','Incassi e scontrino medio','Food cost e fornitori','Costo del personale','Costi fissi','Margine operativo','Confronto con il settore'];
@@ -1064,7 +1067,7 @@ async function scan(){
     if(i>=steps.length){clearInterval(tick); setTimeout(report, reduce?0:500); return;}
     el.querySelector('.scan-side h3').textContent= window.innerWidth<=980? steps[i]+'…' : 'Analisi in corso…';
     const old=stage.querySelector('.vis'); if(old){old.classList.add('out');setTimeout(()=>old.remove(),400);}
-    const v=h(`<div class="vis"></div>`); stage.appendChild(v); const fn=visuals[i]; i<5?fn(v,o):fn(v,c,t);
+    const v=h(`<div class="vis"></div>`); stage.appendChild(v); const fn=visuals[i]; i<5?fn(v,(S.online&&S.online.sito)?S.online:o):fn(v,c,t);
     i++; setTimeout(run,STEP);
   })();
 }
