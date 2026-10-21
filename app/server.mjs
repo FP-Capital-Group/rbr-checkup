@@ -30,8 +30,8 @@ function send(res, code, body, headers = {}) {
 }
 async function readJson(req, max = 64_000) {
   let size = 0; const chunks = [];
-  for await (const c of req) { size += c.length; if (size > max) throw new Error('troppo grande'); chunks.push(c); }
-  return JSON.parse(Buffer.concat(chunks).toString() || '{}');
+  for await (const c of req) { size += c.length; if (size > max) { const e = new Error('richiesta troppo grande'); e.code = 413; throw e; } chunks.push(c); }
+  try { return JSON.parse(Buffer.concat(chunks).toString() || '{}'); } catch { const e = new Error('richiesta non valida'); e.code = 400; throw e; }
 }
 
 const server = http.createServer(async (req, res) => {
@@ -53,7 +53,7 @@ const server = http.createServer(async (req, res) => {
       return send(res, 200, { items: await autocomplete(q, url.searchParams.get('s') || undefined) });
     }
     if (url.pathname === '/api/scan' && req.method === 'POST') {
-      if (limited(ip, 'scan', 15, 3600e3)) return send(res, 429, { error: 'troppe analisi da questa connessione, riprova più tardi' });
+      if (limited(ip, 'scan', 30, 3600e3)) return send(res, 429, { error: 'troppe analisi da questa connessione, riprova più tardi' });
       const b = await readJson(req);
       const s = startScan({ placeId: b.placeId, nome: String(b.nome || '').slice(0, 100), citta: String(b.citta || '').slice(0, 60), session: b.session });
       return send(res, 200, { id: s.id, live: s.live });
@@ -91,6 +91,7 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': TYPES[extname(file)] || 'application/octet-stream', 'Cache-Control': p === '/index.html' ? 'no-cache' : 'public, max-age=86400' });
     res.end(data);
   } catch (e) {
+    if (e.code === 400 || e.code === 413) return send(res, e.code, { error: e.message });
     console.error('errore', url.pathname, e.message);
     send(res, 500, { error: 'errore interno' });
   }
