@@ -464,6 +464,9 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.12)}
 .items .na .st-ic{background:var(--sunk);color:var(--muted)} .items .na .val{color:var(--muted)}
 .gmap{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);margin-top:12px;background:var(--sunk);aspect-ratio:16/10}
 .gmap img{display:block;width:100%;height:100%;object-fit:cover}
+.gmap.nomap{aspect-ratio:auto;background:none;border:0;overflow:visible}
+.gmap.nomap .rk{position:static;max-width:none;min-width:0;font-size:15px;padding:14px 16px}
+.gmap.nomap .rk div{padding:6px 0}
 .gmap .rk{position:absolute;right:10px;bottom:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 10px;box-shadow:var(--shadow);font-size:12.5px;min-width:190px;max-width:70%;animation:toss .6s 1s both}
 .gmap .rk div{display:flex;justify-content:space-between;gap:10px;padding:2px 0;white-space:nowrap}
 .gmap .rk div span:first-child{overflow:hidden;text-overflow:ellipsis}
@@ -975,7 +978,7 @@ function visMap(v,o){
   if(o.source==='live'){
     const top=rk.list.slice(0,4), meIn=top.some(r=>r.me);
     v.innerHTML=`<div class="map-box"><div class="qbar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span id="qtype"></span><i class="caret"></i></div>
-      <div class="gmap"><img alt="Mappa del locale e dei concorrenti" src="/api/map/${o.scanId}.png">
+      <div class="gmap"><img alt="Mappa del locale e dei concorrenti" src="/api/map/${o.scanId}.png" onerror="this.parentElement.classList.add('nomap');this.remove()">
       <div class="rk">${top.map((r,i)=>`<div class="${r.me?'me':''}"><span>${i+1}° ${esc(r.n)}</span><span>${r.r!=null?r.r.toFixed(1).replace('.',',')+' ★':''}</span></div>`).join('')}${meIn?'':`<div class="me"><span>${rk.pos?rk.pos+'°':'20+'} ${esc(o.name)}</span><span></span></div>`}</div></div>
       <div class="gattrib">Mappa e dati: Google</div></div>`;
     const el=v.querySelector('#qtype'), txt=rk.query; let k=0;
@@ -989,6 +992,12 @@ function visMap(v,o){
 }
 function visReviews(v,o){
   const rots=[-1.5,1,-.8,1.6,-1.2];
+  if(!(o.reviews||[]).length){
+    const g=o.google||{}, full=Math.round(g.rating||0);
+    v.innerHTML=g.rating==null?`<div class="bench"><h4>Recensioni</h4><p class="st">Scheda Google non trovata.</p></div>`
+      :`<div class="adbox" style="width:min(340px,100%);text-align:center;animation-delay:0s"><div class="ak">Voto su Google</div><div class="an num">${String(g.rating).replace('.',',')}</div><div class="stars" style="color:var(--warn);font-size:22px;letter-spacing:3px">${'★'.repeat(full)}${'☆'.repeat(5-full)}</div><p>${dot(g.reviews||0)} recensioni${g.rating<4.5?' · chi ti confronta vede locali sopra di te':''}</p></div>`;
+    return;
+  }
   v.innerHTML=`<div class="rcards">${o.reviews.map((r,i)=>`<div class="rcard" style="top:${i*94}px;--rot:${rots[i]}deg;animation-delay:${i*.38}s;z-index:${i}">
     <div class="rtop"><span class="av">${r.a}</span><span><b>${esc(r.autore||r.a+'.')}</b> <small style="color:var(--muted)">${esc(r.d)}</small></span><span class="stars">${'★'.repeat(r.st)}${'☆'.repeat(5-r.st)}</span></div>
     <p>${esc(r.t)}</p>${r.r==null?'':`<span class="reply ${r.r?'y':'n'}">${r.r?'Risposta del titolare':'Senza risposta'}</span>`}</div>`).join('')}

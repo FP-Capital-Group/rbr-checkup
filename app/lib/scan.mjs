@@ -46,7 +46,7 @@ async function run(s, inp) {
   const p = await details(pid, inp.session);
   const city = cityOf(p), hood = hoodOf(p);
   const typeWord = TYPE_WORD[p.primaryType] || (p.primaryTypeDisplayName?.text || 'ristorante').toLowerCase();
-  const photos = p.photos || [];
+  const photos = p.photos || [];   // senza fatturazione Google le foto non arrivano: allora il controllo è «non verificabile»
   const name = p.displayName?.text || inp.nome || '';
   const reviews = (p.reviews || []).map(r => ({
     a: (firstName(r.authorAttribution?.displayName)[0] || '?').toUpperCase(),
@@ -62,7 +62,7 @@ async function run(s, inp) {
       descrizione: !!p.editorialSummary?.text, sito: !!p.websiteUri, prenota: p.reservable === true,
     },
     website: p.websiteUri || null,
-    foto: photos.length, fotoLocale: photos.filter(ph => (ph.authorAttributions || []).some(a => (a.displayName || '').toLowerCase().includes(name.toLowerCase().slice(0, 6)))).length,
+    foto: p.photos ? photos.length : null, fotoLocale: photos.filter(ph => (ph.authorAttributions || []).some(a => (a.displayName || '').toLowerCase().includes(name.toLowerCase().slice(0, 6)))).length,
     deliveryGoogle: p.delivery ?? null,
     reviewsSample: reviews,
     risposte: null, ultime: null,       // risposte del titolare: servono DataForSEO (fase 2)
