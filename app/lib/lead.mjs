@@ -9,8 +9,8 @@ const escH = t => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': 
 // Evento Lead a Meta dal server (Conversions API), deduplicato con il Pixel tramite event_id.
 // Parte solo se il visitatore ha accettato i cookie di misurazione.
 async function metaCapi(L, ctx) {
-  const pixel = process.env.META_PIXEL_ID, tok = process.env.META_CAPI_TOKEN || process.env.META_TOKEN;
-  if (!pixel || !tok || !L.consenso) return 'skip';
+  const pixels = (process.env.META_PIXEL_ID || '').split(',').map(x => x.trim()).filter(Boolean), tok = process.env.META_CAPI_TOKEN || process.env.META_TOKEN;
+  if (!pixels.length || !tok || !L.consenso) return 'skip';
   const ph = (normPhone(L.tel) || '').replace(/\D/g, '');
   const ev = {
     event_name: 'Lead', event_time: Math.floor(Date.now() / 1000), action_source: 'website', event_id: L.eventId,
@@ -22,11 +22,14 @@ async function metaCapi(L, ctx) {
   };
   const body = { data: [ev] };
   if (process.env.CAPI_TEST_CODE) body.test_event_code = process.env.CAPI_TEST_CODE;
-  try {
-    const r = await fetch(`https://graph.facebook.com/v21.0/${pixel}/events?access_token=${encodeURIComponent(tok)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(8000) });
-    const j = await r.json().catch(() => ({}));
-    return r.ok ? 'ok' : 'errore ' + (j.error?.message || r.status).toString().slice(0, 80);
-  } catch (e) { return 'errore'; }
+  const res = await Promise.all(pixels.map(async pixel => {
+    try {
+      const r = await fetch(`https://graph.facebook.com/v21.0/${pixel}/events?access_token=${encodeURIComponent(tok)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(8000) });
+      const j = await r.json().catch(() => ({}));
+      return r.ok ? 'ok' : 'errore ' + (j.error?.error_user_title || j.error?.message || r.status).toString().slice(0, 80);
+    } catch (e) { return 'errore'; }
+  }));
+  return res.every(x => x === 'ok') ? 'ok' : res.join(' | ');
 }
 
 // Prima mail al ristoratore, mandata da GHL subito dopo il check-up: riepilogo + una sola azione (prenotare la call)
