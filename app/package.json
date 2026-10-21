@@ -1,0 +1,9 @@
+{
+  "name": "rbr-checkup",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Check-up Ristorante RBR: pagina + API di scansione",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node server.mjs" }
+}

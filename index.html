@@ -7,6 +7,7 @@
 <meta property="og:title" content="Quanto guadagna davvero il tuo ristorante?">
 <meta property="og:description" content="Check-up gratuito in 2 minuti di Restaurant Business Revolution.">
 <meta property="og:type" content="website">
+<meta name="robots" content="index,follow">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>RBR Check-up Ristorante</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -452,6 +453,24 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.12)}
 .pos.ok{background:var(--good-soft);color:var(--good)} .pos.warn{background:var(--warn-soft);color:var(--warn)} .pos.bad{background:var(--bad-soft);color:var(--bad)}
 .items li.grp{display:block;padding:14px 24px 4px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-top:0}
 
+.search{position:relative}
+.ac{position:absolute;left:0;right:0;top:calc(100% + 8px);background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);list-style:none;margin:0;padding:6px;z-index:30;text-align:left}
+.ac li button{display:block;width:100%;text-align:left;background:none;border:0;border-radius:10px;padding:10px 12px;cursor:pointer}
+.ac li button:hover,.ac li button.on{background:var(--sunk)}
+.ac b{display:block;font-size:15.5px} .ac small{color:var(--muted);font-size:13px}
+.ac .gattr{font-size:11px;color:var(--muted);text-align:right;padding:4px 10px 2px}
+.search.live{grid-template-columns:1fr auto} .search.live label+label{display:none}
+.dotst.na{background:var(--sunk);color:var(--muted)}
+.items .na .st-ic{background:var(--sunk);color:var(--muted)} .items .na .val{color:var(--muted)}
+.gmap{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);margin-top:12px;background:var(--sunk);aspect-ratio:16/10}
+.gmap img{display:block;width:100%;height:100%;object-fit:cover}
+.gmap .rk{position:absolute;right:10px;bottom:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 10px;box-shadow:var(--shadow);font-size:12.5px;min-width:190px;max-width:70%;animation:toss .6s 1s both}
+.gmap .rk div{display:flex;justify-content:space-between;gap:10px;padding:2px 0;white-space:nowrap}
+.gmap .rk div span:first-child{overflow:hidden;text-overflow:ellipsis}
+.gmap .rk .me{color:var(--red);font-weight:700}
+.gattrib{font-size:11px;color:var(--muted);margin-top:6px}
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
+
 /* Responsive */
 @media (max-width:980px){
   .quiz{grid-template-columns:1fr}
@@ -527,7 +546,22 @@ const TYPES = {
 };
 const T_PERS=30, T_AFF=9, T_ALTRI=7, T_EBIT=15;
 
-const S = {nome:'',citta:'',tipo:null,incasso:60000,scontrino:null,fornitori:null,personale:null,affitto:null,altri:null,mkt:null,nonSo:false,ce:null,schede:null,contatti:null,demo:false,online:null,onlineP:null};
+const S = {place:null,scanId:null,session:null,utm:{},nome:'',citta:'',tipo:null,incasso:60000,scontrino:null,fornitori:null,personale:null,affitto:null,altri:null,mkt:null,nonSo:false,ce:null,schede:null,contatti:null,demo:false,online:null,onlineP:null};
+
+/* ---------- Server (scansione vera) ----------
+   La pagina parla con il server solo se è servita da lui (checkup.restaurantbusinessrevolution.com).
+   Su GitHub Pages o come anteprima resta in modalità esempio. */
+let CFG={live:false};
+const cfgReady=(location.protocol.startsWith('http')&&!/github\.io$|claude|claudeusercontent/.test(location.hostname))
+  ? fetch('/api/config',{signal:AbortSignal.timeout?AbortSignal.timeout(3000):undefined}).then(r=>r.ok?r.json():{live:false}).then(j=>{CFG=j||{live:false};return CFG;}).catch(()=>CFG)
+  : Promise.resolve(CFG);
+try{ const q=new URLSearchParams(location.search); ['utm_source','utm_medium','utm_campaign','utm_content','fbclid','gclid'].forEach(k=>{const v=q.get(k); if(v) S.utm[k.replace('utm_','')]=v.slice(0,120);}); }catch(e){}
+const uuid=()=>(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2));
+function track(ev,data){ try{ if(window.fbq) fbq('track',ev,data||{}); if(window.gtag) gtag('event',ev==='Lead'?'generate_lead':ev,data||{}); }catch(e){} }
+cfgReady.then(c=>{
+  if(c.pixel){ !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js'); fbq('init',c.pixel); fbq('track','PageView'); }
+  if(c.ga4){ const sc=document.createElement('script'); sc.async=true; sc.src='https://www.googletagmanager.com/gtag/js?id='+c.ga4; document.head.appendChild(sc); window.dataLayer=window.dataLayer||[]; window.gtag=function(){dataLayer.push(arguments)}; gtag('js',new Date()); gtag('config',c.ga4); }
+});
 
 /* ---------- Utility ---------- */
 const dot = n => { const s=String(Math.round(Math.abs(n))).replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return (n<0?'−':'')+s; };
@@ -572,7 +606,7 @@ function scores(c,o){
   const ce=[0,3,7,10][S.ce??0], sch=[0,3,7,10][S.schede??0];
   const con=[0,3,6,9][S.contatti??0];
   const mk=c.mp<.5?0:c.mp<2?3:c.mp<=5.5?6:4;
-  const D=Math.round(onlineChecks(o).reduce((a,i)=>a+(i.w||0)*(i.s==='ok'?1:i.s==='warn'?.5:0),0));
+  const OC=onlineChecks(o).filter(i=>i.w&&i.s!=='na'), W=OC.reduce((a,i)=>a+i.w,0), D=W?Math.round(35*OC.reduce((a,i)=>a+i.w*(i.s==='ok'?1:i.s==='warn'?.5:0),0)/W):0;
   const A=Math.round(fc+pe+fi), B=Math.max(0,Math.round(ce+sch-(S.nonSo?2:0))), C=Math.round(con+mk);
   return {A,B,C,D,tot:A+B+C+D};
 }
@@ -585,11 +619,12 @@ function problems(c,o){
   if((S.schede??0)<=1) p.push({t:'Prezzi del menu senza scheda food cost',e:.02*n});
   if((S.contatti??0)<=2) p.push({t:'Clienti che non tornano: database non usato',e:.025*n*((S.contatti??0)===2?.6:1)});
   if(c.mp<1) p.push({t:'Marketing quasi assente',e:.012*n});
-  if(rk.pos>3) p.push({t:`Sei ${rk.pos}° su Google Maps per «${rk.query}»`,e:.015*n*(rk.pos>7?1:.6)});
-  if(g.risposte/g.ultime<.4) p.push({t:`Rispondi a ${g.risposte} recensioni su ${g.ultime}`,e:.006*n});
-  if(g.rating<4.4) p.push({t:`Voto Google ${String(g.rating).replace('.',',')}: sotto chi ti sta vicino`,e:.015*n});
-  if(!o.sito.prenotazione) p.push({t:'Niente prenotazione online dal sito',e:.01*n});
-  if(!o.sito.pixelMeta) p.push({t:'Pubblicità senza tracciamento: non sai quanto ti costa un cliente',e:.004*n+c.mkt*.2});
+  if(rk && (rk.pos==null||rk.pos>3)) p.push({t:rk.pos?`Sei ${rk.pos}° su Google Maps per «${rk.query}»`:`Non compari nei primi 20 su Maps per «${rk.query}»`,e:.015*n*(rk.pos==null||rk.pos>7?1:.6)});
+  if(g.risposte!=null && g.risposte/g.ultime<.4) p.push({t:`Rispondi a ${g.risposte} recensioni su ${g.ultime}`,e:.006*n});
+  if(g.rating!=null && g.rating<4.4) p.push({t:`Voto Google ${String(g.rating).replace('.',',')}: sotto chi ti sta vicino`,e:.015*n});
+  if(o.sito.prenotazione===false) p.push({t:'Niente prenotazione online',e:.01*n});
+  if(o.sito.pixelMeta===false) p.push({t:'Pubblicità senza tracciamento: non sai quanto ti costa un cliente',e:.004*n+c.mkt*.2});
+  if(o.source==='live' && !o.sito.has) p.push({t:'Nessun sito collegato alla scheda Google',e:.01*n});
   // tetto: mai più del 15% del fatturato, scalato in proporzione
   const tot=p.reduce((a,x)=>a+x.e,0), cap=.15*n;
   if(tot>cap) p.forEach(x=>x.e*=cap/tot);
@@ -667,14 +702,34 @@ function home(){
     </div>
   </section>`);
   app.appendChild(el);
-  el.querySelector('#startForm').addEventListener('submit',e=>{e.preventDefault();
-    S.nome=el.querySelector('#nome').value.trim(); S.citta=el.querySelector('#citta').value.trim();
-    if(!S.nome){el.querySelector('#nome').focus();return;}
+  const form=el.querySelector('#startForm'), inp=el.querySelector('#nome');
+  cfgReady.then(c=>{ if(c.live){ form.classList.add('live'); inp.placeholder='Cerca il tuo locale, es. Pizzeria da Gino Latina'; el.querySelector('#nome').closest('label').querySelector('small').textContent='Il tuo locale su Google'; attachAutocomplete(form,inp); } });
+  form.addEventListener('submit',e=>{e.preventDefault();
+    S.nome=inp.value.trim(); S.citta=el.querySelector('#citta').value.trim();
+    if(!S.nome){inp.focus();return;}
     S.demo=false; qi=0; startOnline(); quiz();});
   el.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>el.querySelector('#nome').focus()));
   el.querySelector('#demoBtn').addEventListener('click',()=>{
     Object.assign(S,{nome:'Trattoria Esempio',citta:'Roma',tipo:'trattoria',incasso:70000,scontrino:34,fornitori:22300,personale:22500,affitto:5800,altri:5200,mkt:400,nonSo:false,ce:1,schede:0,contatti:1,demo:true});
     startOnline(); scan();});
+}
+
+function attachAutocomplete(form,inp){
+  let timer=null, items=[], sel=-1, box=null;
+  S.session=uuid();
+  const close=()=>{ if(box){box.remove();box=null;} sel=-1; };
+  const pick=it=>{ S.place=it; S.nome=it.main; S.citta=(it.sec||'').split(',').map(x=>x.trim()).filter(x=>x&&!/^(italia|italy)$/i.test(x)).slice(-1)[0]||''; inp.value=it.main; close(); S.demo=false; qi=0; startOnline(); quiz(); };
+  const render=()=>{ close(); if(!items.length) return;
+    box=h(`<ul class="ac" role="listbox">${items.map((it,i)=>`<li><button type="button" role="option" class="${i===sel?'on':''}" data-i="${i}"><b>${esc(it.main)}</b><small>${esc(it.sec)}</small></button></li>`).join('')}<li class="gattr">Suggerimenti da Google</li></ul>`);
+    form.appendChild(box); box.querySelectorAll('[data-i]').forEach(b=>b.addEventListener('mousedown',e=>{e.preventDefault(); pick(items[+b.dataset.i]);})); };
+  inp.addEventListener('input',()=>{ S.place=null; clearTimeout(timer); const q=inp.value.trim(); if(q.length<3){items=[];close();return;}
+    timer=setTimeout(()=>fetch('/api/places?'+new URLSearchParams({q,s:S.session})).then(r=>r.json()).then(j=>{ if(inp.value.trim()!==q) return; items=j.items||[]; sel=-1; render(); }).catch(()=>{}),220); });
+  inp.addEventListener('keydown',e=>{ if(!box) return;
+    if(e.key==='ArrowDown'){e.preventDefault(); sel=Math.min(items.length-1,sel+1); render();}
+    else if(e.key==='ArrowUp'){e.preventDefault(); sel=Math.max(0,sel-1); render();}
+    else if(e.key==='Enter'&&sel>=0){e.preventDefault(); pick(items[sel]);}
+    else if(e.key==='Escape') close(); });
+  inp.addEventListener('blur',()=>setTimeout(close,150));
 }
 
 /* ---------- QUIZ ---------- */
@@ -811,34 +866,80 @@ function exampleOnline(){
     delivery:[{p:'Deliveroo',on:true,r:4.2},{p:'Glovo',on:false},{p:'Just Eat',on:true,r:4.0}],
     promo:{thefork:false,googlePost:false}};
 }
-function startOnline(){
-  S.online=null;
-  S.onlineP = (ONLINE_API ? fetch(`${ONLINE_API}?nome=${encodeURIComponent(S.nome)}&citta=${encodeURIComponent(S.citta)}`).then(r=>r.ok?r.json():Promise.reject()).catch(()=>exampleOnline())
-    : Promise.resolve(exampleOnline())).then(o=>(S.online=o));
+const host=u=>{try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return u||''}};
+function fromServer(st){
+  const P=st.parts||{}, g=P.google;
+  if(!g) return null;
+  const si=P.sito||{na:true}, sp=P.velocita||{na:true}, rk=P.ranking, ig=P.instagram||{na:true}, me=P.meta||{na:true};
+  const siteOk=si && !si.na && si.reachable!==false;
+  const found=(si.delivery||[]);
+  return {source:'live', scanId:st.id, name:g.name, address:g.address, city:g.city, typeWord:g.typeWord,
+    sito:{url:host(si.url||g.website), has:!!g.website, https: g.website? (si.https ?? g.website.startsWith('https')) : null,
+      speed:sp.na?null:sp.score, lcp:sp.na?null:sp.lcp, speedWhy:sp.why,
+      prenotazione: siteOk? (si.prenotazione || g.completo.prenota) : (g.completo.prenota?true:null), booking:si.booking||null,
+      pixelMeta: siteOk? si.pixelMeta : null, ga4: siteOk? si.ga4 : null, gtm: !!si.gtm, why: si.why||''},
+    google:{rating:g.rating, reviews:g.reviews, completo:g.completo, risposte:g.risposte, ultime:g.ultime, foto:g.foto, fotoGiorni:null, mapsUri:g.mapsUri},
+    ranking: rk ? {query:rk.query, pos:rk.pos, total:rk.total, list:rk.list.map(x=>({n:x.n,r:x.r,v:x.v,me:x.me}))} : null,
+    queries: rk ? rk.queries : [],
+    reviews: (g.reviewsSample||[]).slice(0,5).map(r=>({a:r.a,autore:r.autore,d:r.d,st:r.st,t:r.t,r:null})),
+    instagram: ig, meta: me,
+    delivery: ['Deliveroo','Glovo','Just Eat'].map(p=>({p, on: found.includes(p)? true : null})),
+    promo:{thefork: si.thefork? true : null, googlePost:null}};
 }
+function startOnline(){
+  S.online=null; S.scanId=null;
+  S.onlineP = cfgReady.then(c=>{
+    if(!c.live || S.demo) return exampleOnline();
+    return fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({placeId:S.place?.id||null,nome:S.nome,citta:S.citta,session:S.session})})
+      .then(r=>r.json()).then(j=>{ if(!j.id) throw new Error(j.error||'scan'); S.scanId=j.id; return pollScan(j.id); })
+      .catch(()=>({source:'errore'}));
+  }).then(o=>(S.online=o));
+}
+// legge lo stato ogni 2 s; si ferma quando la scansione è finita o dopo 70 s
+function pollScan(id){
+  const t0=Date.now();
+  return new Promise(res=>{ (function poll(){
+    fetch('/api/scan/'+id).then(r=>r.json()).then(st=>{
+      const o=fromServer(st); if(o) S.online=o;
+      if(st.status==='done'||Date.now()-t0>70000) return res(o||{source:'errore',error:st.error});
+      setTimeout(poll,2000);
+    }).catch(()=>{ if(Date.now()-t0>70000) res(S.online||{source:'errore'}); else setTimeout(poll,3000); });
+  })(); });
+}
+function emptyOnline(){ return {source:'errore',sito:{url:'',https:null,speed:null,lcp:null,prenotazione:null,pixelMeta:null,ga4:null},google:{rating:null,reviews:null,completo:null,risposte:null,ultime:null,foto:null},ranking:null,queries:[],reviews:[],instagram:{na:true,why:'locale non trovato su Google'},meta:{na:true},delivery:[],promo:{thefork:null,googlePost:null}}; }
+const onl=()=>{ const o=S.online; return (o&&o.sito)?o:emptyOnline(); };
 const stOf=(ok,warn)=>ok?'ok':warn?'warn':'bad';
+const NA=(t,why,w)=>({w,s:'na',t,v:'Non verificabile',d:why});
+const LBL={orari:'orari',telefono:'telefono',descrizione:'descrizione',menu:'menu',prenota:'prenotazione su Google',sito:'sito'};
 function onlineChecks(o){
-  const g=o.google, si=o.sito, rk=o.ranking, comp=Object.values(g.completo).filter(Boolean).length, ratio=g.risposte/g.ultime;
-  const dOn=o.delivery.filter(d=>d.on);
-  return [
-    {grp:'Sito web'},
-    {w:3,s:stOf(si.https,false),t:'Sito online e sicuro',v:si.https?'https':'non sicuro',d:si.https?`${esc(si.url)} risponde ed è protetto.`:'Senza https Chrome lo segna come «non sicuro».'},
-    {w:2,s:stOf(si.speed>=70,si.speed>=50),t:'Veloce da telefono',v:`${si.speed}/100`,d:`Si carica in ${String(si.lcp).replace('.',',')} secondi. Sopra i 3 secondi metà delle persone chiude la pagina.`},
-    {w:3,s:stOf(si.prenotazione,false),t:'Prenotazione online dal sito',v:si.prenotazione?'Sì':'No',d:si.prenotazione?'Chi arriva dal sito prenota in due tocchi.':'Chi ti trova la sera tardi non può prenotare: prenota da un altro.'},
-    {w:3,s:stOf(si.pixelMeta&&si.ga4,si.pixelMeta||si.ga4),t:'Pixel Meta e Google Analytics',v:[si.pixelMeta?'Pixel':'',si.ga4?'GA4':''].filter(Boolean).join(' + ')||'Nessuno',d:'Senza tracciamento non sai quante prenotazioni ti porta ogni euro di pubblicità.'},
-    {grp:'Google'},
-    {w:5,s:stOf(rk.pos<=3,rk.pos<=7),t:`Trovato su Google per «${esc(rk.query)}»`,v:`${rk.pos}° su Maps`,d:rk.pos<=3?'Sei tra i primi tre: lì arrivano quasi tutti i clic.':'I primi tre risultati di Maps si prendono la maggior parte dei clic. Tu sei sotto.'},
-    {w:3,s:stOf(comp===5,comp>=3),t:'Profilo Google completo',v:`${comp}/5`,d:`Mancano: ${Object.entries(g.completo).filter(e=>!e[1]).map(e=>({orari:'orari',telefono:'telefono',descrizione:'descrizione',menu:'menu',prenota:'link prenotazione'}[e[0]])).join(', ')||'niente'}.`},
-    {w:4,s:stOf(g.rating>=4.5,g.rating>=4.2),t:'Voto Google 4,5 o più',v:`${String(g.rating).replace('.',',')} ★ · ${dot(g.reviews)}`,d:'Chi sceglie dove mangiare confronta le stelle prima del menu.'},
-    {w:4,s:stOf(ratio>=.8,ratio>=.4),t:'Risponde alle recensioni',v:`${g.risposte} su ${g.ultime}`,d:'Rispondere a tutte, anche alle negative, alza il voto e ti fa salire su Maps.'},
-    {w:2,s:stOf(g.fotoGiorni<=60,g.fotoGiorni<=120),t:'Foto aggiornate',v:`${g.fotoGiorni} giorni fa`,d:`${g.foto} foto in tutto. Foto nuove dei piatti ogni mese tengono viva la scheda.`},
-    {grp:'Social e campagne'},
-    {w:2,s:stOf(o.instagram.ultimoPost<=7,o.instagram.ultimoPost<=21),t:'Instagram attivo',v:`ultimo post ${o.instagram.ultimoPost} gg fa`,d:`${esc(o.instagram.handle)} · ${dot(o.instagram.follower)} follower · ${o.instagram.post30} post negli ultimi 30 giorni.`},
-    {w:2,s:stOf(o.meta.attive>0,o.meta.ultimaGiorni<=90),t:'Campagne Meta attive',v:o.meta.attive>0?`${o.meta.attive} attive`:'Nessuna',d:o.meta.attive>0?'Dalla Libreria inserzioni di Meta.':`Libreria inserzioni di Meta: nessuna campagna da ${o.meta.ultimaGiorni} giorni.`},
-    {grp:'Delivery e promozioni'},
-    {w:1,s:stOf(dOn.length>=2,dOn.length===1),t:'Sulle piattaforme delivery',v:`${dOn.length} su ${o.delivery.length}`,d:o.delivery.map(d=>d.on?`${d.p} ${d.r.toFixed(1).replace('.',',')} ★`:`${d.p} no`).join(' · ')+'.'},
-    {w:1,s:stOf(o.promo.thefork||o.promo.googlePost,false),t:'Promozioni attive',v:(o.promo.thefork||o.promo.googlePost)?'Sì':'Nessuna',d:'Nessuna offerta su TheFork né post con offerta su Google. Le promo giuste riempiono gli orari morti.'}
-  ];
+  const g=o.google||{}, si=o.sito||{}, rk=o.ranking, ig=o.instagram||{na:true}, me=o.meta||{na:true};
+  const L=[{grp:'Sito web'}];
+  if(!si.has && o.source==='live') L.push({w:3,s:'bad',t:'Sito web collegato a Google',v:'Nessuno',d:'La scheda Google non ha un sito: chi ti cerca non trova menu, foto e prenotazione.'});
+  else if(si.https==null) L.push(NA('Sito online e sicuro',si.why||'Non siamo riusciti a leggere il sito.',3));
+  else L.push({w:3,s:stOf(si.https,false),t:'Sito online e sicuro',v:si.https?'https':'non sicuro',d:si.https?`${esc(si.url)} risponde ed è protetto.`:'Senza https Chrome lo segna come «non sicuro».'});
+  L.push(si.speed==null?NA('Veloce da telefono',si.speedWhy||'Test di velocità non disponibile.',2):{w:2,s:stOf(si.speed>=70,si.speed>=50),t:'Veloce da telefono',v:`${si.speed}/100`,d:si.lcp?`Si carica in ${String(si.lcp).replace('.',',')} secondi. Sopra i 3 secondi metà delle persone chiude la pagina.`:'Misurato con Google PageSpeed.'});
+  L.push(si.prenotazione==null?NA('Prenotazione online','Non siamo riusciti a verificarla sul sito.',3):{w:3,s:stOf(si.prenotazione,false),t:'Prenotazione online',v:si.prenotazione?(si.booking||'Sì'):'No',d:si.prenotazione?'Chi ti trova prenota in due tocchi.':'Chi ti trova la sera tardi non può prenotare: prenota da un altro.'});
+  if(si.pixelMeta==null&&si.ga4==null) L.push(NA('Pixel Meta e Google Analytics',si.gtm?'Sono gestiti da Google Tag Manager: li verifichiamo in call.':'Non siamo riusciti a leggere il sito.',3));
+  else L.push({w:3,s:stOf(si.pixelMeta&&si.ga4,si.pixelMeta||si.ga4),t:'Pixel Meta e Google Analytics',v:[si.pixelMeta?'Pixel':'',si.ga4?'GA4':''].filter(Boolean).join(' + ')||'Nessuno',d:'Senza tracciamento non sai quante prenotazioni ti porta ogni euro di pubblicità.'});
+  L.push({grp:'Google'});
+  if(!rk) L.push(NA('Posizione su Google Maps','Ricerca non disponibile in questo momento.',5));
+  else L.push({w:5,s:rk.pos==null?'bad':stOf(rk.pos<=3,rk.pos<=7),t:`Trovato su Google per «${esc(rk.query)}»`,v:rk.pos?`${rk.pos}° su Maps`:'oltre il 20°',d:rk.pos&&rk.pos<=3?'Sei tra i primi tre: lì arrivano quasi tutti i clic.':'I primi tre risultati di Maps si prendono la maggior parte dei clic. Tu sei sotto.'});
+  if(g.completo){ const e=Object.entries(g.completo), n=e.filter(x=>x[1]).length; L.push({w:3,s:stOf(n===e.length,n>=e.length-2),t:'Profilo Google completo',v:`${n}/${e.length}`,d:n===e.length?'Scheda completa.':`Mancano: ${e.filter(x=>!x[1]).map(x=>LBL[x[0]]||x[0]).join(', ')}.`}); }
+  else L.push(NA('Profilo Google completo','Scheda non trovata.',3));
+  L.push(g.rating==null?NA('Voto Google 4,5 o più','Scheda non trovata.',4):{w:4,s:stOf(g.rating>=4.5,g.rating>=4.2),t:'Voto Google 4,5 o più',v:`${String(g.rating).replace('.',',')} ★ · ${dot(g.reviews||0)}`,d:'Chi sceglie dove mangiare confronta le stelle prima del menu.'});
+  L.push(g.risposte==null?NA('Risponde alle recensioni','Lo controlliamo in call sulle ultime recensioni.',4):{w:4,s:stOf(g.risposte/g.ultime>=.8,g.risposte/g.ultime>=.4),t:'Risponde alle recensioni',v:`${g.risposte} su ${g.ultime}`,d:'Rispondere a tutte, anche alle negative, alza il voto e ti fa salire su Maps.'});
+  if(g.fotoGiorni!=null) L.push({w:2,s:stOf(g.fotoGiorni<=60,g.fotoGiorni<=120),t:'Foto aggiornate',v:`${g.fotoGiorni} giorni fa`,d:`${g.foto} foto in tutto. Foto nuove dei piatti ogni mese tengono viva la scheda.`});
+  else if(g.foto!=null) L.push({w:2,s:stOf(g.foto>=10,g.foto>=5),t:'Foto sulla scheda',v:g.foto>=10?'10 o più':`${g.foto}`,d:'Foto belle e recenti dei piatti fanno scegliere te. Caricane di nuove ogni mese.'});
+  L.push({grp:'Social e campagne'});
+  if(ig.na) L.push(ig.why&&/nessun profilo/.test(ig.why)?{w:2,s:'warn',t:'Instagram collegato al sito',v:'Non trovato',d:'Sul sito non c’è il link a Instagram: chi ti scopre non vede le foto dei piatti.'}:NA('Instagram attivo',(ig.handle?ig.handle+': ':'')+(ig.why||'Non verificabile.'),2));
+  else L.push({w:2,s:stOf(ig.ultimoPost!=null&&ig.ultimoPost<=7,ig.ultimoPost!=null&&ig.ultimoPost<=21),t:'Instagram attivo',v:ig.ultimoPost!=null?`ultimo post ${ig.ultimoPost} gg fa`:'nessun post',d:`${esc(ig.handle)} · ${dot(ig.follower||0)} follower · ${ig.post30||0} post negli ultimi 30 giorni.`});
+  L.push(me.na?NA('Campagne Meta attive',me.why||'Non verificabile.',2):{w:2,s:stOf(me.attive>0,me.ultimaGiorni!=null&&me.ultimaGiorni<=90),t:'Campagne Meta attive',v:me.attive>0?`${me.attive} attive`:'Nessuna',d:me.attive>0?'Dalla Libreria inserzioni di Meta.':'Libreria inserzioni di Meta: nessuna campagna attiva adesso.'});
+  L.push({grp:'Delivery e promozioni'});
+  const dl=o.delivery||[], dOn=dl.filter(d=>d.on), known=dl.some(d=>d.on!=null);
+  L.push(!known?NA('Sulle piattaforme delivery','Non trovato sul sito: lo verifichiamo in call.',1):{w:1,s:stOf(dOn.length>=2,dOn.length===1),t:'Sulle piattaforme delivery',v:`${dOn.length} su ${dl.length}`,d:dl.map(d=>d.on?`${d.p}${d.r?' '+d.r.toFixed(1).replace('.',',')+' ★':''}`:`${d.p} ${d.on===false?'no':'?'}`).join(' · ')+'.'});
+  const pr=o.promo||{}; const pk=pr.thefork!=null||pr.googlePost!=null;
+  L.push(!pk?NA('Promozioni attive','Le verifichiamo in call.',1):{w:1,s:stOf(pr.thefork||pr.googlePost,false),t:'Promozioni attive',v:(pr.thefork||pr.googlePost)?'Sì':'Nessuna',d:'Le promo giuste riempiono gli orari morti senza svendere il locale.'});
+  return L;
 }
 const PIN_XY=[[22,30],[63,22],[80,52],[36,62],[52,44],[18,80],[72,82]];
 function mapSVG(){
@@ -851,6 +952,17 @@ function mapSVG(){
 }
 function visMap(v,o){
   const rk=o.ranking;
+  if(!rk){ v.innerHTML=`<div class="map-box"><div class="qbar">Cerchiamo ${esc(S.nome)} su Google…</div></div>`; return; }
+  if(o.source==='live'){
+    const top=rk.list.slice(0,4), meIn=top.some(r=>r.me);
+    v.innerHTML=`<div class="map-box"><div class="qbar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span id="qtype"></span><i class="caret"></i></div>
+      <div class="gmap"><img alt="Mappa del locale e dei concorrenti" src="/api/map/${o.scanId}.png">
+      <div class="rk">${top.map((r,i)=>`<div class="${r.me?'me':''}"><span>${i+1}° ${esc(r.n)}</span><span>${r.r!=null?r.r.toFixed(1).replace('.',',')+' ★':''}</span></div>`).join('')}${meIn?'':`<div class="me"><span>${rk.pos?rk.pos+'°':'20+'} ${esc(o.name)}</span><span></span></div>`}</div></div>
+      <div class="gattrib">Mappa e dati: Google</div></div>`;
+    const el=v.querySelector('#qtype'), txt=rk.query; let k=0;
+    (function ty(){ if(!document.body.contains(el)) return; el.textContent=txt.slice(0,++k); if(k<txt.length) setTimeout(ty,reduce?0:45); })();
+    return;
+  }
   const pins=rk.list.map((r,i)=>{const [x,y]=PIN_XY[i%PIN_XY.length];return `<div class="mpin ${r.me?'me':''}" style="left:${x}%;top:${y}%;animation-delay:${(1.1+i*.22).toFixed(2)}s"><span>${r.me?esc(S.nome)+' · '+rk.pos+'°':'Concorrente'}</span><i></i></div>`;}).join('');
   v.innerHTML=`<div class="map-box"><div class="qbar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span id="qtype"></span><i class="caret"></i></div><div class="map-wrap">${mapSVG()}${pins}</div></div>`;
   const el=v.querySelector('#qtype'), txt=rk.query; let k=0;
@@ -859,38 +971,43 @@ function visMap(v,o){
 function visReviews(v,o){
   const rots=[-1.5,1,-.8,1.6,-1.2];
   v.innerHTML=`<div class="rcards">${o.reviews.map((r,i)=>`<div class="rcard" style="top:${i*94}px;--rot:${rots[i]}deg;animation-delay:${i*.38}s;z-index:${i}">
-    <div class="rtop"><span class="av">${r.a}</span><span><b>${r.a}.</b> <small style="color:var(--muted)">${r.d}</small></span><span class="stars">${'★'.repeat(r.st)}${'☆'.repeat(5-r.st)}</span></div>
-    <p>${esc(r.t)}</p><span class="reply ${r.r?'y':'n'}">${r.r?'Risposta del titolare':'Senza risposta'}</span></div>`).join('')}
-    <div class="badge-big" style="animation-delay:2.1s"><small>Risposte</small><b class="num">${o.google.risposte}/${o.google.ultime}</b> <small>ultime recensioni</small></div></div>`;
+    <div class="rtop"><span class="av">${r.a}</span><span><b>${esc(r.autore||r.a+'.')}</b> <small style="color:var(--muted)">${esc(r.d)}</small></span><span class="stars">${'★'.repeat(r.st)}${'☆'.repeat(5-r.st)}</span></div>
+    <p>${esc(r.t)}</p>${r.r==null?'':`<span class="reply ${r.r?'y':'n'}">${r.r?'Risposta del titolare':'Senza risposta'}</span>`}</div>`).join('')}
+    ${o.google.risposte!=null?`<div class="badge-big" style="animation-delay:2.1s"><small>Risposte</small><b class="num">${o.google.risposte}/${o.google.ultime}</b> <small>ultime recensioni</small></div>`
+      :o.google.rating!=null?`<div class="badge-big" style="animation-delay:2.1s"><small>Voto Google</small><b class="num">${String(o.google.rating).replace('.',',')} ★</b> <small>${dot(o.google.reviews||0)} recensioni</small></div>`:''}</div>`;
 }
 function visSite(v,o){
-  const si=o.sito, r=80, C=Math.PI*r, f=si.speed/100, col=si.speed>=70?'var(--good)':si.speed>=50?'var(--warn)':'var(--bad)';
-  const ticks=[['Sito sicuro (https)',si.https?'ok':'bad'],['Prenotazione online',si.prenotazione?'ok':'bad'],['Pixel Meta',si.pixelMeta?'ok':'bad'],['Google Analytics',si.ga4?'ok':'bad']];
+  const si=o.sito, r=80, C=Math.PI*r, f=(si.speed||0)/100, col=si.speed==null?'var(--muted)':si.speed>=70?'var(--good)':si.speed>=50?'var(--warn)':'var(--bad)';
+  const tri=x=>x==null?'na':x?'ok':'bad';
+  const ticks=[['Sito sicuro (https)',tri(si.https)],['Prenotazione online',tri(si.prenotazione)],['Pixel Meta',tri(si.pixelMeta)],['Google Analytics',tri(si.ga4)]];
   v.innerHTML=`<div class="site-vis"><div class="phone"><div class="url">${esc(si.url)}</div>
       <div class="sk" style="height:120px"></div><div class="sk" style="height:14px;width:70%"></div><div class="sk" style="height:10px;width:85%"></div><div class="sk" style="height:10px;width:60%"></div><div class="sk" style="height:34px;width:50%;border-radius:17px"></div><div class="sk" style="height:70px"></div></div>
     <div class="site-side"><div class="gauge"><svg viewBox="0 0 200 118"><path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="var(--sunk)" stroke-width="16" stroke-linecap="round"/>
       <path id="gArc" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="${col}" stroke-width="16" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" style="transition:stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1)"/>
-      <text class="gv num" x="100" y="92" text-anchor="middle" id="gNum">0</text><text class="gl" x="100" y="114" text-anchor="middle">Velocità da telefono · ${String(si.lcp).replace('.',',')}s</text></svg></div>
-      <ul class="tk">${ticks.map((t,i)=>`<li style="animation-delay:${(1+i*.35).toFixed(2)}s"><span class="dotst ${t[1]}">${t[1]==='ok'?'✓':'✕'}</span>${t[0]}</li>`).join('')}</ul></div></div>`;
-  setTimeout(()=>{const a=v.querySelector('#gArc'); if(a) a.style.strokeDashoffset=C*(1-f); const n=v.querySelector('#gNum'); if(n) countUp(n,si.speed,x=>Math.round(x),1500);},200);
+      <text class="gv num" x="100" y="92" text-anchor="middle" id="gNum">0</text><text class="gl" x="100" y="114" text-anchor="middle">Velocità da telefono${si.lcp?' · '+String(si.lcp).replace('.',',')+'s':''}</text></svg></div>
+      <ul class="tk">${ticks.map((t,i)=>`<li style="animation-delay:${(1+i*.35).toFixed(2)}s"><span class="dotst ${t[1]}">${t[1]==='ok'?'✓':t[1]==='na'?'?':'✕'}</span>${t[0]}</li>`).join('')}</ul></div></div>`;
+  setTimeout(()=>{const a=v.querySelector('#gArc'); if(a) a.style.strokeDashoffset=C*(1-f); const n=v.querySelector('#gNum'); if(n){ if(si.speed==null) n.textContent='—'; else countUp(n,si.speed,x=>Math.round(x),1500);} },200);
 }
 function visSocial(v,o){
-  const ig=o.instagram;
-  v.innerHTML=`<div class="soc"><div class="igbox"><div class="ih"><span class="igav"><i></i></span><span><b>${esc(ig.handle)}</b>${dot(ig.follower)} follower · ${ig.post30} post in 30 gg</span></div>
-    <div class="ig">${Array.from({length:9},(_,i)=>`<i class="${i===0?'last':''}" data-d="${ig.ultimoPost} gg fa" style="animation-delay:${(i*.09).toFixed(2)}s"></i>`).join('')}</div></div>
-    <div class="adbox"><div class="ak">Libreria inserzioni Meta</div><div class="an num" style="color:${o.meta.attive?'var(--good)':'var(--bad)'}">${o.meta.attive}</div><p>${o.meta.attive?'campagne attive adesso':`campagne attive · l'ultima ${o.meta.ultimaGiorni} giorni fa`}</p></div></div>`;
+  const ig=o.instagram||{na:true}, me=o.meta||{na:true};
+  const igHead=ig.na?`<b>${esc(ig.handle||'Instagram')}</b>${esc(ig.why||'non verificabile')}`:`<b>${esc(ig.handle)}</b>${dot(ig.follower||0)} follower · ${ig.post30||0} post in 30 gg`;
+  v.innerHTML=`<div class="soc"><div class="igbox"><div class="ih"><span class="igav"><i></i></span><span>${igHead}</span></div>
+    <div class="ig">${Array.from({length:9},(_,i)=>`<i class="${i===0&&!ig.na&&ig.ultimoPost!=null?'last':''}" data-d="${ig.ultimoPost} gg fa" style="animation-delay:${(i*.09).toFixed(2)}s${ig.na?';opacity:.35':''}"></i>`).join('')}</div></div>
+    <div class="adbox"><div class="ak">Libreria inserzioni Meta</div>${me.na?`<div class="an" style="font-size:22px;color:var(--muted)">Non verificato</div><p>${esc(me.why||'')}</p>`:`<div class="an num" style="color:${me.attive?'var(--good)':'var(--bad)'}">${me.attive}</div><p>${me.attive?'campagne attive adesso':'campagne attive adesso'}</p>`}</div></div>`;
 }
 function visDelivery(v,o){
-  const rows=o.delivery.map(d=>[d.p,d.on?`Presente · ${d.r.toFixed(1).replace('.',',')} ★`:'Non presente',d.on?'ok':'bad']).concat([['TheFork',o.promo.thefork?'Promo attiva':'Nessuna promo','warn'],['Post offerta su Google',o.promo.googlePost?'Attivo':'Nessuno','warn']]);
-  rows.forEach(r=>{ if(r[0]==='TheFork'&&o.promo.thefork) r[2]='ok'; if(r[0].startsWith('Post')&&o.promo.googlePost) r[2]='ok'; });
-  v.innerHTML=`<ul class="dl">${rows.map((r,i)=>`<li style="animation-delay:${(i*.4).toFixed(2)}s"><span><b>${r[0]}</b><small>${r[1]}</small></span><span class="dotst ${r[2]}">${r[2]==='ok'?'✓':r[2]==='warn'?'!':'✕'}</span></li>`).join('')}</ul>`;
+  const pr=o.promo||{};
+  const rows=(o.delivery||[]).map(d=>[d.p,d.on?`Presente${d.r?' · '+d.r.toFixed(1).replace('.',',')+' ★':''}`:d.on===false?'Non presente':'Non verificato',d.on?'ok':d.on===false?'bad':'na'])
+    .concat([['TheFork',pr.thefork?'Presente':pr.thefork===false?'Nessuna promo':'Non verificato',pr.thefork?'ok':pr.thefork===false?'warn':'na'],['Post offerta su Google',pr.googlePost?'Attivo':pr.googlePost===false?'Nessuno':'Non verificato',pr.googlePost?'ok':pr.googlePost===false?'warn':'na']]);
+  v.innerHTML=`<ul class="dl">${rows.map((r,i)=>`<li style="animation-delay:${(i*.4).toFixed(2)}s"><span><b>${r[0]}</b><small>${r[1]}</small></span><span class="dotst ${r[2]}">${r[2]==='ok'?'✓':r[2]==='warn'?'!':r[2]==='na'?'?':'✕'}</span></li>`).join('')}</ul>`;
 }
 
 /* ---------- SCANSIONE ---------- */
 async function scan(){
   defaults(); document.getElementById('mobBar').hidden=true;
   if(!S.onlineP) startOnline();
-  const o=await S.onlineP;
+  let o=await S.onlineP;
+  if(!o||!o.sito) o=S.online=(o&&o.source==='errore'&&S.online&&S.online.sito)?S.online:emptyOnline();
   const c=compute(), t=typeOf();
   const steps=['Google e concorrenti','Recensioni e risposte','Sito web e velocità','Instagram e campagne Meta','Delivery e promozioni','Incassi e scontrino medio','Food cost e fornitori','Costo del personale','Costi fissi','Margine operativo','Confronto con il settore'];
   const STEP=reduce?300:2900, TOTAL=STEP*steps.length;
@@ -898,7 +1015,7 @@ async function scan(){
   const el=h(`<section class="screen scan">
     <aside class="scan-side">
       <h3>Analisi in corso…</h3>
-      <div class="sub">${esc(S.nome)}${S.citta?' · '+esc(S.citta):''}</div>
+      <div class="sub">${esc(o.name||S.nome)}${(o.city||S.citta)?' · '+esc(o.city||S.citta):''}</div>
       <ul class="steps">${steps.map((s,i)=>(i===0?'<li class="sep">Presenza online</li>':i===5?'<li class="sep">Conto economico</li>':'')+`<li class="st"><span class="ic"></span>${s}</li>`).join('')}</ul>
       <div class="timer"><i class="tbar" id="tbar" style="width:0"></i><span class="spin"></span><span id="tleft" class="num"></span></div>
     </aside>
@@ -1002,12 +1119,14 @@ function waterfallSVG(c){
 
 /* ---------- REPORT ---------- */
 function report(){
-  const o=S.online||exampleOnline();
+  const o=onl();
   const c=compute(), sc=scores(c,o), pr=problems(c,o), [gl,gc]=grade(sc.tot), t=typeOf();
-  const oc=onlineChecks(o), rk=o.ranking, above=rk.list.findIndex(r=>r.me);
+  const oc=onlineChecks(o), rk=o.ranking, above=rk?rk.list.findIndex(r=>r.me):-1;
+  const hasOrg=(o.queries||[]).some(q=>q.org!=null);
+  S.reportData={score:sc.tot,grade:gl,A:sc.A,B:sc.B,C:sc.C,D:sc.D,netto:c.netto,ebitPct:Math.round(c.ep*10)/10,fc:Math.round(c.fc),pers:Math.round(c.pp),lossM:pr.reduce((a,p)=>a+p.e,0)/12,problemi:pr.map(p=>p.t),tipo:t.label,mapsUri:o.google?.mapsUri||null};
   const lossY=pr.reduce((a,p)=>a+p.e,0);
   const items=checklist(c);
-  const bad=items.filter(i=>i.s!=='ok').length+oc.filter(i=>i.w&&i.s!=='ok').length, nItems=items.length+oc.filter(i=>i.w).length;
+  const bad=items.filter(i=>i.s!=='ok').length+oc.filter(i=>i.w&&i.s!=='ok'&&i.s!=='na').length, nItems=items.length+oc.filter(i=>i.w&&i.s!=='na').length;
   const subs=[['Presenza online',sc.D,35,'','a-onl'],['Margini',sc.A,30,'','a-mar'],['Controllo',sc.B,20,'','a-con'],['Clienti e marketing',sc.C,15,'','a-cre']];
   app.innerHTML='';
   const el=h(`<section class="screen report">
@@ -1024,7 +1143,7 @@ function report(){
         <div class="row2">
           <div class="card loss">
             <h3>Stai lasciando sul tavolo circa <span class="m num" id="lossM">${eur(lossY/12)}</span> al mese per ${pr.length} problemi</h3>
-            <div class="who"><div class="av">${esc((S.nome||'?').trim().charAt(0).toUpperCase())}</div><div><b>${esc(S.nome)}</b><small>${esc(S.citta||'')}${S.citta?' · ':''}${t.label}</small></div></div>
+            <div class="who"><div class="av">${esc((o.name||S.nome||'?').trim().charAt(0).toUpperCase())}</div><div><b>${esc(o.name||S.nome)}</b><small>${esc(o.address||S.citta||'')}${(o.address||S.citta)?' · ':''}${t.label}</small></div></div>
             <ul class="plist">${pr.slice(0,4).map(p=>`<li><span class="tri"></span><span>${p.t}</span><span class="eur num">−${eur(p.e/12)}/mese</span></li>`).join('')}</ul>
             ${pr.length>4?`<div class="more">+ altri ${pr.length-4} problemi nel report</div>`:''}
           </div>
@@ -1038,20 +1157,21 @@ function report(){
               <div class="you" id="you2" style="left:0%"><span>Tu · ${pct(c.ep)}</span><i style="height:50px"></i></div></div></div>
           </div>
         </div>
-        <div class="row2">
+        ${rk?`<div class="row2">
           <div class="card">
-            <div style="display:flex;justify-content:space-between;gap:10px;align-items:start;flex-wrap:wrap"><h3 class="t">${above>0?`Sei sotto ${above} concorrenti su Google Maps`:'Sei primo su Google Maps'}</h3>${o.source==='esempio'?'<span class="expill">Dati di esempio</span>':''}</div>
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:start;flex-wrap:wrap"><h3 class="t">${above>0?`Sei sotto ${above} concorrenti su Google Maps`:above===0?'Sei primo su Google Maps':'Non compari tra i primi su Google Maps'}</h3>${o.source==='esempio'?'<span class="expill">Dati di esempio</span>':''}</div>
             <div class="st">Ricerca «${esc(rk.query)}»</div>
-            <ol class="rank">${rk.list.map((r,i)=>`<li class="${r.me?'me':''}"><span class="p">${i+1}°</span><span class="nm">${r.me?esc(S.nome):esc(r.n)}</span><span class="rt"><em>★</em> ${r.r.toFixed(1).replace('.',',')} · ${dot(r.v)}</span></li>`).join('')}</ol>
+            <ol class="rank">${rk.list.map((r,i)=>`<li class="${r.me?'me':''}"><span class="p">${r.me&&rk.pos?rk.pos:i+1}°</span><span class="nm">${r.me?esc(o.name||S.nome):esc(r.n)}</span><span class="rt">${r.r!=null?`<em>★</em> ${r.r.toFixed(1).replace('.',',')} · `:''}${dot(r.v||0)}</span></li>`).join('')}</ol>
+            ${o.source==='live'?'<div class="gattrib">Dati: Google Maps</div>':''}
           </div>
           <div class="card">
             <div style="display:flex;justify-content:space-between;gap:10px;align-items:start;flex-wrap:wrap"><h3 class="t">Dove compari quando ti cercano</h3>${o.source==='esempio'?'<span class="expill">Dati di esempio</span>':''}</div>
             <div class="st">Posizione su Google Maps e nei risultati di ricerca</div>
-            <div class="qt-wrap"><table class="qt"><thead><tr><th>Ricerca</th><th>Maps</th><th>Google</th></tr></thead><tbody>
-            ${o.queries.map(q=>{const cell=v=>v==null?'<span class="pos bad">Assente</span>':`<span class="pos ${v<=3?'ok':v<=7?'warn':'bad'}">${v}°</span>`;return `<tr><td>${esc(q.q)}</td><td>${cell(q.map)}</td><td>${cell(q.org)}</td></tr>`;}).join('')}
+            <div class="qt-wrap"><table class="qt"><thead><tr><th>Ricerca</th><th>Maps</th>${hasOrg||o.source==='esempio'?'<th>Google</th>':''}</tr></thead><tbody>
+            ${o.queries.map(q=>{const cell=v=>v==null?'<span class="pos bad">Oltre il 20°</span>':`<span class="pos ${v<=3?'ok':v<=7?'warn':'bad'}">${v}°</span>`;return `<tr><td>${esc(q.q)}</td><td>${cell(q.map)}</td>${hasOrg||o.source==='esempio'?`<td>${cell(q.org)}</td>`:''}</tr>`;}).join('')}
             </tbody></table></div>
           </div>
-        </div>
+        </div>`:''}
         <div class="card">
           <div class="sec-h" style="margin:0 0 12px"><div><h3 class="t">Il tuo conto economico in un colpo d'occhio</h3><p class="st" style="margin:4px 0 0">Stima annua dalle tue risposte</p></div>
           <div class="legend"><span><i style="background:var(--ink)"></i>Fatturato netto</span><span><i style="background:var(--red)"></i>Costi</span><span><i style="background:var(--good)"></i>Margine</span></div></div>
@@ -1083,10 +1203,11 @@ function report(){
           <h3 id="gateT">Sblocca il report completo</h3>
           <p>Vedi dove perdi <b class="num" style="color:var(--bad)">${eur(lossY)}</b> l'anno e quanto ti possiamo portare in più.</p>
           <form id="gateForm" novalidate>
+            <input class="hp" id="g-web" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
             <label class="field" for="g-nome"><span>Nome e cognome</span><input id="g-nome" autocomplete="name" required></label>
             <label class="field" for="g-tel"><span>Cellulare (ti mandiamo il report su WhatsApp)</span><input id="g-tel" type="tel" autocomplete="tel" inputmode="tel" required></label>
             <label class="field" for="g-mail"><span>Email</span><input id="g-mail" type="email" autocomplete="email" required></label>
-            <label class="legal" for="g-ok"><input type="checkbox" id="g-ok"> <span>Accetto l'informativa privacy e di essere ricontattato da Restaurant Business Revolution.</span></label>
+            <label class="legal" for="g-ok"><input type="checkbox" id="g-ok"> <span>Accetto l'<a href="${esc(CFG.privacy||'https://restaurantbusinessrevolution.com/privacy-policy/')}" target="_blank" rel="noopener">informativa privacy</a> e di essere ricontattato da Restaurant Business Revolution.</span></label>
             <div class="err-msg" id="gErr"></div>
             <button class="cta" type="submit">Mostrami il report</button>
             ${S.demo?'<button type="button" class="linkish" id="skipGate" style="font-size:13px;margin-top:4px;align-self:center">Continua senza dati (solo esempio)</button>':''}
@@ -1104,8 +1225,8 @@ function report(){
   countUp(big.querySelector('.big'),sc.tot,v=>Math.round(v),1800);
   el.querySelectorAll('[data-cta]').forEach(b=>b.addEventListener('click',book));
   el.querySelectorAll('.subrow').forEach(b=>b.addEventListener('click',()=>{const t=document.getElementById(b.dataset.go); if(t && !document.getElementById('rmain').classList.contains('locked')) t.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});}));
-  const form=el.querySelector('#gateForm');
-  form.addEventListener('submit',e=>{e.preventDefault();
+  const form=el.querySelector('#gateForm'); const gateT0=Date.now();
+  form.addEventListener('submit',async e=>{e.preventDefault();
     const f={n:form.querySelector('#g-nome'),t:form.querySelector('#g-tel'),m:form.querySelector('#g-mail')};
     let err='';
     Object.values(f).forEach(x=>x.parentElement.classList.remove('err'));
@@ -1116,6 +1237,11 @@ function report(){
     form.querySelector('#gErr').textContent=err;
     if(err) return;
     S.lead={nome:f.n.value.trim(),tel:f.t.value.trim(),email:f.m.value.trim()};
+    if(CFG.live && !S.demo){
+      const btn=form.querySelector('button[type=submit]'); btn.disabled=true; btn.textContent='Un attimo…';
+      try{ await fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...S.lead,website:form.querySelector('#g-web').value,t:gateT0,locale:S.online?.name||S.nome,citta:S.online?.city||S.citta,utm:S.utm,report:S.reportData})}); }catch(err){}
+      track('Lead',{content_name:'checkup-ristorante'});
+    }
     unlock();
   });
   const sk=el.querySelector('#skipGate'); if(sk) sk.addEventListener('click',unlock);
@@ -1133,7 +1259,7 @@ function areaBlock(id,n,title,sub,score,max,items,example){
   const [,col]=subGrade(score/max);
   const ic={ok:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
     warn:'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 6v8M12 18.5v.5"/></svg>',
-    bad:'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>'};
+    bad:'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',na:'<span style="font-size:11px;font-weight:800">?</span>'};
   return `<div class="card area" id="${id}"><div class="area-h"><span class="n">${n}.</span><div><h3>${title}</h3><p>${sub}</p></div>
     <div style="margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end">${example?'<span class="expill">Dati di esempio</span>':''}<span class="num" style="font-family:var(--f-mono);font-size:13px;color:${col};font-weight:600">${score}/${max}</span>${ringSVG(36,5,score/max,col,true)}</div></div>
     <ul class="items">${items.map(i=>i.grp?`<li class="grp">${i.grp}</li>`:`<li class="${i.s}"><span class="st-ic">${ic[i.s]}</span><b>${i.t}</b><span class="val num">${i.v}</span><p>${i.d}</p></li>`).join('')}</ul></div>`;
@@ -1242,6 +1368,8 @@ function timelineSVG(cum){
 
 /* ---------- Prenotazione ---------- */
 function book(){
+  if(CFG.booking){ window.open(CFG.booking,'_blank','noopener'); return; }
+  if(CFG.live){ if(S.lead) toast('Ti scriviamo su WhatsApp entro 24 ore per fissare la call.'); else { const g=document.getElementById('g-nome'); if(g){ g.scrollIntoView({behavior:'smooth',block:'center'}); g.focus(); } else toast('Fai il check-up: alla fine ti proponiamo la call.'); } return; }
   if(document.getElementById('bookBox')) return;
   const box=h(`<div class="gate" id="bookBox" style="position:fixed;background:rgba(20,17,18,.45);padding:20px;align-items:center;z-index:60">
     <div class="gate-box" style="position:relative;top:0" role="dialog" aria-modal="true" aria-labelledby="bkT">
