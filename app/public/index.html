@@ -1123,7 +1123,7 @@ function report(){
   const c=compute(), sc=scores(c,o), pr=problems(c,o), [gl,gc]=grade(sc.tot), t=typeOf();
   const oc=onlineChecks(o), rk=o.ranking, above=rk?rk.list.findIndex(r=>r.me):-1;
   const hasOrg=(o.queries||[]).some(q=>q.org!=null);
-  S.reportData={score:sc.tot,grade:gl,A:sc.A,B:sc.B,C:sc.C,D:sc.D,netto:c.netto,ebitPct:Math.round(c.ep*10)/10,fc:Math.round(c.fc),pers:Math.round(c.pp),lossM:pr.reduce((a,p)=>a+p.e,0)/12,problemi:pr.map(p=>p.t),tipo:t.label,mapsUri:o.google?.mapsUri||null};
+  S.reportData={score:sc.tot,grade:gl,A:sc.A,B:sc.B,C:sc.C,D:sc.D,netto:c.netto,ebitPct:Math.round(c.ep*10)/10,fc:Math.round(c.fc),pers:Math.round(c.pp),lossM:pr.reduce((a,p)=>a+p.e,0)/12,problemi:pr.map(p=>p.t),tipo:t.label,mapsUri:o.google?.mapsUri||null,lordo:S.incasso*12,scontrino:S.scontrino,address:o.address||null,crm:['No','Qualche numero su WhatsApp','Sì, ma non li usa','Sì, con mail e WhatsApp automatici'][S.contatti??0]};
   const lossY=pr.reduce((a,p)=>a+p.e,0);
   const items=checklist(c);
   const bad=items.filter(i=>i.s!=='ok').length+oc.filter(i=>i.w&&i.s!=='ok'&&i.s!=='na').length, nItems=items.length+oc.filter(i=>i.w&&i.s!=='na').length;
