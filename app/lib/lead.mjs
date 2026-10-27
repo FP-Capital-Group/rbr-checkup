@@ -1,5 +1,6 @@
 // Contatto del check-up: GHL (contatto + tag + campi + nota) e avviso Telegram a Marco.
 import crypto from 'node:crypto';
+import { appendLeadRow } from './sheet.mjs';
 const GHL = 'https://services.leadconnectorhq.com';
 const sha = v => v ? crypto.createHash('sha256').update(String(v).trim().toLowerCase()).digest('hex') : undefined;
 const dotIt = n => String(Math.round(Math.abs(n))).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -137,6 +138,10 @@ export async function saveLead(L, ctx = {}) {
         }
       }
     } catch (e) { out.ghl = 'errore ' + e.message; }
+  }
+  // copia nel foglio lead del team (non per il collaudo automatico)
+  if (L.utm?.source !== 'collaudo') {
+    try { out.sheet = await appendLeadRow(L, { phone: normPhone(L.tel), contactId: out.contactId }); } catch (e) { out.sheet = 'errore ' + e.message.slice(0, 80); }
   }
   const tg = process.env.TG_TOKEN, chat = process.env.TG_CHAT;
   if (tg && chat) {
