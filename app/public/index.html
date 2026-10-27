@@ -56,7 +56,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
 /* HOME */
 .home{padding-block:clamp(40px,9vh,110px) 60px;text-align:center}
 .eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--red-ink);font-weight:500}
-.home h1{font-size:clamp(34px,5.6vw,64px);font-weight:800;font-stretch:108%;letter-spacing:-.035em;line-height:.98;margin:18px auto 0;max-width:15ch}
+.home h1{font-size:clamp(34px,5.6vw,64px);font-weight:800;font-stretch:108%;letter-spacing:-.035em;line-height:.98;margin:18px auto 0;max-width:22ch}
 .home h1 em{font-style:normal;color:var(--red);position:relative;white-space:nowrap}
 .home h1 em::after{content:"";position:absolute;left:0;right:0;bottom:.04em;height:.09em;background:var(--red);transform:scaleX(0);transform-origin:left;animation:underline .9s .5s cubic-bezier(.7,0,.2,1) forwards}
 @keyframes underline{to{transform:scaleX(1)}}
@@ -587,7 +587,7 @@ try{ const q=new URLSearchParams(location.search); ['utm_source','utm_medium','u
    Fuori dal server (GitHub Pages, anteprima) si sceglie con ?v=numeri / ?v=marketing. Senza: pagina di scelta. */
 const MODE=(()=>{ let m=''; try{ m=new URLSearchParams(location.search).get('v')||location.pathname.replace(/\/+$/,'').split('/').pop()||''; }catch(e){} m=m.toLowerCase(); return m==='numeri'||m==='marketing'?m:null; })();
 const isM=MODE==='marketing', isN=MODE==='numeri';
-if(MODE) document.title=isM?'Hai troppe sedie vuote? · Check-up RBR':'Perché incassi ma non ti resta niente? · Check-up RBR';
+if(MODE) document.title=isM?'Hai troppe sedie vuote? · Check-up RBR':'Incassi tanto ma non ti resta niente? · Check-up RBR';
 function modeHref(m){ const q=new URLSearchParams(location.search); q.delete('v'); const ext=/github\.io$|claude|claudeusercontent/.test(location.hostname)||!location.protocol.startsWith('http');
   if(ext){ q.set('v',m); return '?'+q; } return '/'+m+(q.toString()?'?'+q:''); }
 const uuid=()=>(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2));
@@ -753,12 +753,12 @@ function chooser(){
   </section>`));
 }
 const COPY = isM ? {
-  eb:'', h1:'Hai troppe <em>sedie vuote</em>?',
+  eb:'', h1:'Hai troppe<br><em>sedie vuote</em>?',
   lead:'Analizziamo come ti trovano i clienti: posizione su Google Maps, recensioni, sito, Instagram, campagne e delivery. In 2 minuti vedi dove sei rispetto ai concorrenti e quanti clienti stai lasciando agli altri.',
   chips:[['G','Come mi trovano su Google?'],['★','Le recensioni mi portano clienti?'],['↑','Quanti clienti sto lasciando agli altri?']],
   pv:[[62,'var(--warn)','62/100'],['Posizione su Google Maps','7°',true],['Recensioni senza risposta','17 su 20',true]]
 } : {
-  eb:'Check-up gratuito dei numeri', h1:'Incassi tanto ma <em>ti resta poco</em>?',
+  eb:'Check-up gratuito dei numeri', h1:'Incassi tanto<br>ma non ti resta <em>niente</em>?',
   lead:'Rispondi a 10 domande sui tuoi numeri: incassi, fornitori, personale, costi fissi. In 2 minuti vedi il tuo margine vero, dove perdi soldi e quanto puoi recuperare. Se un numero non lo sai, va bene lo stesso.',
   chips:[['%','Il mio food cost è giusto?'],['€','Il personale mi costa troppo?'],['↑','Quanto margine sto lasciando sul tavolo?']],
   pv:[[58,'var(--warn)','58/100'],['Soldi lasciati sul tavolo','−3.900 € al mese',true],['Food cost','34% <span style="font-size:14px;color:var(--muted);font-weight:600">obiettivo 28%</span>']]
