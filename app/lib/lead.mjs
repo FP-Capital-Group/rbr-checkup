@@ -77,12 +77,18 @@ const tierOf = fatt => fatt >= 1_000_000 ? 'A' : fatt >= 400_000 ? 'B' : 'C';
 
 export function summary(L) {
   const r = L.report || {};
+  const v = r.versione || 'completo';
+  const aree = v === 'marketing' ? `Presenza online ${r.D ?? '?'}/35 · Clienti ${r.C ?? '?'}/15`
+    : v === 'numeri' ? `Margini ${r.A ?? '?'}/30 · Controllo ${r.B ?? '?'}/20 · Clienti ${r.C ?? '?'}/15`
+    : `Presenza online ${r.D ?? '?'}/35 · Margini ${r.A ?? '?'}/30 · Controllo ${r.B ?? '?'}/20 · Clienti ${r.C ?? '?'}/15`;
   const lines = [
-    `Check-up Ristorante — ${L.locale || ''} (${L.citta || ''})`,
+    `Check-up ${v === 'marketing' ? 'Marketing' : v === 'numeri' ? 'Numeri' : 'Ristorante'} — ${L.locale || ''} (${L.citta || ''})`,
+    `Link ${L.utm?.codice || '-'} · fonte ${L.utm?.source || 'diretta'}${L.utm?.campaign ? ' · ' + L.utm.campaign : ''}`,
     `Punteggio ${r.score ?? '?'}/100 · ${r.grade || ''}`,
-    `Presenza online ${r.D ?? '?'}/35 · Margini ${r.A ?? '?'}/30 · Controllo ${r.B ?? '?'}/20 · Clienti ${r.C ?? '?'}/15`,
-    `Fatturato netto stimato ${r.netto ? dotIt(r.netto) + ' €/anno' : '?'} · margine ${r.ebitPct ?? '?'}%`,
-    `Food cost ${r.fc ?? '?'}% · personale ${r.pers ?? '?'}%`,
+    aree,
+    `Fatturato netto stimato ${r.netto ? dotIt(r.netto) + ' €/anno' : '?'}${v === 'marketing' ? '' : ` · margine ${r.ebitPct ?? '?'}%`}`,
+    ...(v === 'marketing' ? [] : [`Food cost ${r.fc ?? '?'}% · personale ${r.pers ?? '?'}%`]),
+    ...(r.nonSo?.length ? [`«Non lo so» su: ${r.nonSo.join(', ')}`] : []),
     `Perdita stimata ${r.lossM ? dotIt(r.lossM) + ' €/mese' : '?'}`,
     'Problemi principali:', ...(r.problemi || []).slice(0, 5).map(p => '- ' + p),
   ];
@@ -103,16 +109,18 @@ export async function saveLead(L, ctx = {}) {
         [F.nome_locale, L.locale], [F.tipologia_locale, r.tipo], [F.indirizzo_locale, r.address],
         [F.fatturato_lordo_annuo, r.lordo ? Math.round(r.lordo) : null], [F.scontrino_medio, r.scontrino],
         [F.incidenza_food, r.fc != null ? r.fc + '%' : null], [F.incidenza_personale, r.pers != null ? r.pers + '%' : null],
-        [F.problema_principale, (r.problemi || [])[0]], [F.ha_crm, r.crm], [F.origine_contatto, 'Check-up Ristorante'],
+        [F.problema_principale, (r.problemi || [])[0]], [F.ha_crm, r.crm], [F.origine_contatto, r.versione === 'marketing' ? 'Check-up Marketing' : r.versione === 'numeri' ? 'Check-up Numeri' : 'Check-up Ristorante'],
         [F.guadagno_potenziale, r.lossM ? `≈ ${dotIt(r.lossM * 12)} €/anno recuperabili (stima check-up)` : null],
-        [F.attribution_origin, L.utm?.source], [F.attribution_campaign, L.utm?.campaign], [F.attribution_ad_name, L.utm?.content],
+        [F.attribution_origin, L.utm?.source], [F.attribution_campaign, L.utm?.campaign], [F.attribution_ad_name, L.utm?.content || (L.utm?.codice ? 'link ' + L.utm.codice : null)],
         [F.data_ricezione, today],
         [F.checkup_punteggio, r.score], [F.checkup_perdita, r.lossM ? Math.round(r.lossM) : null], [F.checkup_margine, r.ebitPct != null ? String(r.ebitPct).replace('.', ',') + '%' : null],
       ].filter(([id, v]) => id && v != null && v !== '').map(([id, field_value]) => ({ id, field_value }));
       const body = {
         locationId: loc, ...splitName(L.nome), email: L.email || undefined, phone: normPhone(L.tel),
         companyName: L.locale || undefined, city: L.citta || undefined, source: 'Check-up Ristorante',
-        tags: ['checkup-ristorante', 'checkup-tier-' + tier, L.utm?.source ? 'fonte-' + String(L.utm.source).toLowerCase().slice(0, 30) : 'fonte-diretta'],
+        tags: ['checkup-ristorante', 'checkup-tier-' + tier, L.utm?.source ? 'fonte-' + String(L.utm.source).toLowerCase().slice(0, 30) : 'fonte-diretta',
+          'checkup-' + (['numeri', 'marketing'].includes(r.versione) ? r.versione : 'completo'),
+          ...(L.utm?.codice ? ['checkup-link-' + String(L.utm.codice).toLowerCase().replace(/[^\w-]/g, '').slice(0, 20)] : [])],
         customFields: cf,
       };
       const res = await fetch(GHL + '/contacts/upsert', { method: 'POST', headers: H(pit), body: JSON.stringify(body), signal: AbortSignal.timeout(10000) });

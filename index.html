@@ -16,10 +16,10 @@
 <style>
 /* Layout: wizard a schermate (home → domande con scontrino live → scansione a step → report con pannello punteggio fisso a sinistra) */
 :root{
-  --paper:#F5F3F3; --surface:#FFFFFF; --sunk:#EDE9E9; --ink:#141112; --muted:#6E6466; --line:#E3DCDC;
+  --paper:#FFFFFF; --surface:#FFFFFF; --sunk:#EDE9E9; --ink:#141112; --muted:#6E6466; --line:#E3DCDC;
   --red:#D90A0F; --red-ink:#B5080C; --red-soft:#FBE5E5;
   --good:#1D8048; --good-soft:#E2F2E8; --warn:#C27800; --warn-soft:#FBF0DA; --bad:#C3221B; --bad-soft:#FBE3E1;
-  --stage:#141112; --stage-ink:#F7F2F2; --stage-muted:#A79C9E; --stage-line:#2F292A;
+  --stage:#FFF6F6; --stage-ink:#141112; --stage-muted:#6E6466; --stage-line:#EBDADA;
   --thermal:#FFFEFA; --thermal-ink:#2A2526;
   --shadow:0 1px 2px rgba(20,17,18,.06),0 8px 28px rgba(20,17,18,.07);
   --f-display:"Archivo","Arial Black","Helvetica Neue",Arial,sans-serif;
@@ -27,18 +27,8 @@
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   --r:14px;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --paper:#121011; --surface:#1C1819; --sunk:#252021; --ink:#F3EEEE; --muted:#A99FA1; --line:#2F2829;
-  --red:#FF3A3F; --red-ink:#FF6B6E; --red-soft:#3A1517;
-  --good:#45C47C; --good-soft:#15301F; --warn:#F2AE3A; --warn-soft:#33270F; --bad:#FF5F55; --bad-soft:#3A1715;
-  --stage:#1C1819; --stage-ink:#F7F2F2; --stage-muted:#A79C9E; --stage-line:#352E2F;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35); color-scheme:dark}}
-:root[data-theme="dark"]{
-  --paper:#121011; --surface:#1C1819; --sunk:#252021; --ink:#F3EEEE; --muted:#A99FA1; --line:#2F2829;
-  --red:#FF3A3F; --red-ink:#FF6B6E; --red-soft:#3A1517;
-  --good:#45C47C; --good-soft:#15301F; --warn:#F2AE3A; --warn-soft:#33270F; --bad:#FF5F55; --bad-soft:#3A1715;
-  --stage:#1C1819; --stage-ink:#F7F2F2; --stage-muted:#A79C9E; --stage-line:#352E2F;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35); color-scheme:dark}
+/* Solo tema chiaro: lo sfondo nero non si legge (Roberto, 26/10/2026) */
+:root{color-scheme:light}
 
 *{box-sizing:border-box}
 html,body{min-height:100%}
@@ -312,9 +302,9 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.12)}
 .items .ok .val{color:var(--good)} .items .warn .val{color:var(--warn)} .items .bad .val{color:var(--bad)}
 
 /* SIMULATORE */
-.sim{background:var(--stage);color:var(--stage-ink);border-radius:24px;padding:clamp(22px,3.4vw,40px);position:relative;overflow:hidden}
-.sim::before{content:"";position:absolute;width:520px;height:520px;right:-180px;top:-220px;background:radial-gradient(circle,rgba(217,10,15,.42),transparent 62%);pointer-events:none}
-.sim .eyebrow{color:#FF7A7D}
+.sim{background:var(--stage);color:var(--stage-ink);border:1px solid var(--stage-line);border-radius:24px;padding:clamp(22px,3.4vw,40px);position:relative;overflow:hidden}
+.sim::before{content:"";position:absolute;width:520px;height:520px;right:-180px;top:-220px;background:radial-gradient(circle,rgba(217,10,15,.10),transparent 62%);pointer-events:none}
+.sim .eyebrow{color:var(--red-ink)}
 .sim h2{font-size:clamp(28px,3.8vw,48px);font-weight:800;font-stretch:108%;letter-spacing:-.035em;line-height:1;margin-top:10px;max-width:18ch;position:relative}
 .sim .intro{color:var(--stage-muted);max-width:58ch;margin-top:12px;position:relative}
 .sim-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:34px;margin-top:30px;position:relative}
@@ -325,13 +315,13 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.12)}
 .lever-top small{display:block;color:var(--stage-muted);font-size:12.5px;font-weight:500;margin-top:1px}
 .lever-top .lv{font-family:var(--f-display);font-weight:800;font-size:22px;white-space:nowrap}
 .sim input[type=range]{height:28px}
-.sim input[type=range]::-webkit-slider-runnable-track{height:6px;background:linear-gradient(90deg,#FF3A3F 0 var(--p,50%),var(--stage-line) var(--p,50%) 100%)}
-.sim input[type=range]::-moz-range-track{height:6px;background:linear-gradient(90deg,#FF3A3F 0 var(--p,50%),var(--stage-line) var(--p,50%) 100%)}
-.sim input[type=range]::-webkit-slider-thumb{width:22px;height:22px;margin-top:-8px;background:var(--stage-ink);border-color:#FF3A3F}
-.sim input[type=range]::-moz-range-thumb{background:var(--stage-ink);border-color:#FF3A3F}
+.sim input[type=range]::-webkit-slider-runnable-track{height:6px;background:linear-gradient(90deg,var(--red) 0 var(--p,50%),var(--stage-line) var(--p,50%) 100%)}
+.sim input[type=range]::-moz-range-track{height:6px;background:linear-gradient(90deg,var(--red) 0 var(--p,50%),var(--stage-line) var(--p,50%) 100%)}
+.sim input[type=range]::-webkit-slider-thumb{width:22px;height:22px;margin-top:-8px;background:var(--surface);border-color:var(--red)}
+.sim input[type=range]::-moz-range-thumb{background:var(--surface);border-color:var(--red)}
 .lever .lg{font-family:var(--f-mono);font-size:11.5px;color:var(--stage-muted);display:flex;justify-content:space-between;margin-top:2px}
-.out-big{white-space:nowrap;font-family:var(--f-display);font-weight:800;font-size:clamp(38px,4.8vw,66px);letter-spacing:-.045em;line-height:.95;color:#fff}
-.out-big .plus{color:#FF3A3F}
+.out-big{white-space:nowrap;font-family:var(--f-display);font-weight:800;font-size:clamp(38px,4.8vw,66px);letter-spacing:-.045em;line-height:.95;color:var(--ink)}
+.out-big .plus{color:var(--red)}
 .out-sub{color:var(--stage-muted);margin-top:8px}
 .out-sub b{color:var(--stage-ink)}
 .compare{display:grid;grid-template-columns:auto 1fr auto;gap:10px 12px;align-items:center;margin-top:24px;font-size:13.5px}
@@ -343,7 +333,7 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.12)}
 .tl text{font-family:var(--f-mono);font-size:11px;fill:var(--stage-muted)}
 .tl .ph{font-family:var(--f-body);font-weight:700;font-size:12px;fill:var(--stage-ink)}
 .brk{margin-top:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.brk div{background:rgba(255,255,255,.05);border:1px solid var(--stage-line);border-radius:12px;padding:10px 12px;min-width:0}
+.brk div{background:var(--surface);border:1px solid var(--stage-line);border-radius:12px;padding:10px 12px;min-width:0}
 .brk small{display:block;color:var(--stage-muted);font-size:12px}
 .brk b{font-family:var(--f-display);font-size:18px;font-weight:800}
 .proof{margin-top:26px;border-top:1px solid var(--stage-line);padding-top:18px;font-size:14px;color:var(--stage-muted);position:relative}
@@ -480,6 +470,19 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.12)}
 .cookie button{border-radius:10px;padding:9px 14px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:var(--surface)}
 .cookie button.ok{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 
+/* Scelta tra le due versioni (numeri / marketing) */
+.pick{margin:40px auto 0;max-width:860px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;text-align:left}
+.pick a{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:26px;color:inherit;text-decoration:none;box-shadow:var(--shadow);transition:border-color .2s,transform .2s}
+.pick a:hover{border-color:var(--red);transform:translateY(-3px)}
+.pick .eyebrow{font-size:11px}
+.pick h2{font-size:clamp(24px,2.6vw,30px);font-weight:800;letter-spacing:-.03em;line-height:1.05}
+.pick p{margin:0;color:var(--muted);font-size:15px}
+.pick .go{margin:auto 0 0;align-self:flex-start;padding:12px 18px}
+.next.alt{background:var(--surface);color:var(--ink);border:1.5px solid var(--line);margin-left:10px}
+.next.alt:hover{border-color:var(--ink)}
+.opt.ns{border-style:dashed}
+.quiz.solo{grid-template-columns:minmax(0,1fr)}
+
 /* Responsive */
 @media (max-width:980px){
   .quiz{grid-template-columns:1fr}
@@ -505,6 +508,8 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.12)}
   .previews{grid-template-columns:1fr;max-width:360px}
   .pv:nth-child(n+2){display:none}
   .opts{grid-template-columns:1fr}
+  .pick{grid-template-columns:1fr}
+  .next.alt{margin-left:0;margin-top:10px}
   .row2,.method{grid-template-columns:1fr}
   .qbody{margin-top:28px}
   .items li{padding:12px 16px}
@@ -555,7 +560,7 @@ const TYPES = {
 };
 const T_PERS=30, T_AFF=9, T_ALTRI=7, T_EBIT=15;
 
-const S = {place:null,scanId:null,session:null,utm:{},nome:'',citta:'',tipo:null,incasso:60000,scontrino:null,fornitori:null,personale:null,affitto:null,altri:null,mkt:null,nonSo:false,ce:null,schede:null,contatti:null,demo:false,online:null,onlineP:null};
+const S = {place:null,scanId:null,session:null,utm:{},nome:'',citta:'',tipo:null,incasso:60000,scontrino:null,fornitori:null,personale:null,affitto:null,altri:null,mkt:null,ns:{},ce:null,schede:null,contatti:null,demo:false,online:null,onlineP:null};
 
 /* ---------- Server (scansione vera) ----------
    La pagina parla con il server solo se è servita da lui (checkup.restaurantbusinessrevolution.com).
@@ -564,7 +569,16 @@ let CFG={live:false};
 const cfgReady=(location.protocol.startsWith('http')&&!/github\.io$|claude|claudeusercontent/.test(location.hostname))
   ? fetch('/api/config',{signal:AbortSignal.timeout?AbortSignal.timeout(3000):undefined}).then(r=>r.ok?r.json():{live:false}).then(j=>{CFG=j||{live:false};return CFG;}).catch(()=>CFG)
   : Promise.resolve(CFG);
-try{ const q=new URLSearchParams(location.search); ['utm_source','utm_medium','utm_campaign','utm_content','fbclid','gclid'].forEach(k=>{const v=q.get(k); if(v) S.utm[k.replace('utm_','')]=v.slice(0,120);}); }catch(e){}
+try{ const q=new URLSearchParams(location.search); ['utm_source','utm_medium','utm_campaign','utm_content','fbclid','gclid'].forEach(k=>{const v=q.get(k); if(v) S.utm[k.replace('utm_','')]=v.slice(0,120);});
+  // codice del link tracciato (?c=1, 2, 3…): ogni campagna ha il suo
+  const lc=(q.get('c')||'').replace(/[^\w-]/g,'').slice(0,20); if(lc) S.utm.codice=lc; }catch(e){}
+/* Due versioni: /numeri («perché non guadagni») e /marketing («perché il locale è vuoto»).
+   Fuori dal server (GitHub Pages, anteprima) si sceglie con ?v=numeri / ?v=marketing. Senza: pagina di scelta. */
+const MODE=(()=>{ let m=''; try{ m=new URLSearchParams(location.search).get('v')||location.pathname.replace(/\/+$/,'').split('/').pop()||''; }catch(e){} m=m.toLowerCase(); return m==='numeri'||m==='marketing'?m:null; })();
+const isM=MODE==='marketing', isN=MODE==='numeri';
+if(MODE) document.title=isM?'Perché il tuo locale non è pieno? · Check-up RBR':'Perché incassi ma non ti resta niente? · Check-up RBR';
+function modeHref(m){ const q=new URLSearchParams(location.search); q.delete('v'); const ext=/github\.io$|claude|claudeusercontent/.test(location.hostname)||!location.protocol.startsWith('http');
+  if(ext){ q.set('v',m); return '?'+q; } return '/'+m+(q.toString()?'?'+q:''); }
 const uuid=()=>(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2));
 function track(ev,data,eventID){ try{ if(window.fbq) fbq('track',ev,data||{},eventID?{eventID}:undefined); if(window.gtag) gtag('event',ev==='Lead'?'generate_lead':ev,data||{}); }catch(e){} }
 const cookieVal=n=>{ try{ return (document.cookie.split('; ').find(x=>x.startsWith(n+'='))||'').split('=')[1]||null; }catch(e){ return null; } };
@@ -630,24 +644,34 @@ function scores(c,o){
   const con=[0,3,6,9][S.contatti??0];
   const mk=c.mp<.5?0:c.mp<2?3:c.mp<=5.5?6:4;
   const OC=onlineChecks(o).filter(i=>i.w&&i.s!=='na'), W=OC.reduce((a,i)=>a+i.w,0), D=W?Math.round(35*OC.reduce((a,i)=>a+i.w*(i.s==='ok'?1:i.s==='warn'?.5:0),0)/W):0;
-  const A=Math.round(fc+pe+fi), B=Math.max(0,Math.round(ce+sch-(S.nonSo?2:0))), C=Math.round(con+mk);
-  return {A,B,C,D,tot:A+B+C+D};
+  const A=Math.round(fc+pe+fi), B=Math.max(0,Math.round(ce+sch-(nsNum()>0?2:0))), C=Math.round(con+mk);
+  // ogni versione conta solo le sue aree, riportate su 100
+  const tot=isM?Math.round((D+C)/50*100):isN?Math.round((A+B+C)/65*100):A+B+C+D;
+  return {A,B,C,D,tot};
 }
+// numeri lasciati a «Non lo so» (solo le domande con un importo)
+function nsNum(){ return ['vendite','fornitori','personale','affitto','altri','mkt'].filter(k=>S.ns[k]).length; }
 function problems(c,o){
   const n=c.netto, p=[], g=o.google, rk=o.ranking;
-  if(c.fc>c.fcT+.5) p.push({t:`Food cost al ${pct(c.fc)}, obiettivo ${c.fcT}%`,e:(c.fc-c.fcT)/100*n});
-  if(c.pp>T_PERS+.5) p.push({t:`Personale al ${pct(c.pp)} del fatturato`,e:(c.pp-T_PERS)/100*n*.6});
+  if(!isM){
+  if(c.fc>c.fcT+.5) p.push({t:S.ns.fornitori?`Food cost che non conosci: in un locale come il tuo senza controllo è di solito intorno al ${pct(c.fc)} (obiettivo ${c.fcT}%)`:`Food cost al ${pct(c.fc)}, obiettivo ${c.fcT}%`,e:(c.fc-c.fcT)/100*n});
+  if(c.pp>T_PERS+.5) p.push({t:S.ns.personale?`Costo del personale che non conosci: stimato al ${pct(c.pp)} del fatturato`:`Personale al ${pct(c.pp)} del fatturato`,e:(c.pp-T_PERS)/100*n*.6});
   if(c.ap+c.op>T_AFF+T_ALTRI+.5) p.push({t:`Costi fissi pesanti: ${pct(c.ap+c.op)}`,e:((c.ap+c.op)-(T_AFF+T_ALTRI))/100*n*.3});
   if((S.ce??0)<=1) p.push({t:'Conto economico guardato troppo di rado',e:.01*n});
   if((S.schede??0)<=1) p.push({t:'Prezzi del menu senza scheda food cost',e:.02*n});
+  }
   if((S.contatti??0)<=2) p.push({t:'Clienti che non tornano: database non usato',e:.025*n*((S.contatti??0)===2?.6:1)});
   if(c.mp<1) p.push({t:'Marketing quasi assente',e:.012*n});
+  if(isN) return capProblems(p,n);
   if(rk && (rk.pos==null||rk.pos>3)) p.push({t:rk.pos?`Sei ${rk.pos}° su Google Maps per «${rk.query}»`:`Non compari nei primi 20 su Maps per «${rk.query}»`,e:.015*n*(rk.pos==null||rk.pos>7?1:.6)});
   if(g.risposte!=null && g.risposte/g.ultime<.4) p.push({t:`Rispondi a ${g.risposte} recensioni su ${g.ultime}`,e:.006*n});
   if(g.rating!=null && g.rating<4.4) p.push({t:`Voto Google ${String(g.rating).replace('.',',')}: sotto chi ti sta vicino`,e:.015*n});
   if(o.sito.prenotazione===false) p.push({t:'Niente prenotazione online',e:.01*n});
   if(o.sito.pixelMeta===false) p.push({t:'Pubblicità senza tracciamento: non sai quanto ti costa un cliente',e:.004*n+c.mkt*.2});
   if(o.source==='live' && !o.sito.has) p.push({t:'Nessun sito collegato alla scheda Google',e:.01*n});
+  return capProblems(p,n);
+}
+function capProblems(p,n){
   // tetto: mai più del 15% del fatturato, scalato in proporzione
   const tot=p.reduce((a,x)=>a+x.e,0), cap=.15*n;
   if(tot>cap) p.forEach(x=>x.e*=cap/tot);
@@ -680,11 +704,11 @@ const SL = {
     target:()=>nettoM()*.03,tlabel:'3%',
     hint:()=>{const v=S.mkt/nettoM()*100;const st=v<1?'bad':v<2?'warn':v<=5.5?'good':'warn';return `= <b>${pct(v,1)}</b> del fatturato · chi cresce investe tra il 2% e il 5% <span class="pill ${st}">${v<1?'Quasi zero':v<2?'Poco':v<=5.5?'In linea':'Alto: misuri il ritorno?'}</span>`;}}
 };
-const Q = [
+const Q_ALL = [
   {id:'tipo',kind:'choice',eb:'Il locale',title:'Che tipo di locale hai?',desc:'Ogni locale ha i suoi numeri giusti. Una pizzeria non si misura come un ristorante di pesce.',
     opts:Object.entries(TYPES).map(([k,v])=>({v:k,b:v.label,s:`Food cost obiettivo ${v.fc}%`}))},
   {id:'vendite',kind:'sliders',eb:'Le vendite',title:'Quanto incassi in un mese normale?',desc:'Un mese tipo, né il migliore né il peggiore. Va bene una stima.',keys:['incasso','scontrino']},
-  {id:'fornitori',kind:'sliders',eb:'Food cost',title:'Quanto spendi di fornitori al mese?',desc:'Cibo e bevande, senza IVA. Somma le fatture di un mese tipo.',keys:['fornitori'],nonSo:true},
+  {id:'fornitori',kind:'sliders',eb:'Food cost',title:'Quanto spendi di fornitori al mese?',desc:'Cibo e bevande, senza IVA. Somma le fatture di un mese tipo.',keys:['fornitori']},
   {id:'personale',kind:'sliders',eb:'Personale',title:'Quanto ti costa il personale al mese?',desc:'Stipendi, contributi e TFR di tutti, compresi i soci che lavorano nel locale.',keys:['personale']},
   {id:'affitto',kind:'sliders',eb:'Costi fissi',title:'Quanto paghi di affitto?',desc:'Canone mensile del locale, senza IVA.',keys:['affitto']},
   {id:'altri',kind:'sliders',eb:'Costi fissi',title:'E gli altri costi fissi?',desc:'Luce, gas, acqua, commercialista, software di cassa, manutenzioni, assicurazioni.',keys:['altri']},
@@ -696,32 +720,58 @@ const Q = [
   {id:'contatti',kind:'choice',list:true,eb:'Clienti',title:'Raccogli i contatti dei tuoi clienti?',desc:'Chi è già stato da te è il cliente più facile da far tornare.',
     opts:[{b:'No'},{b:'Qualche numero su WhatsApp'},{b:'Sì, ma non li uso'},{b:'Sì, con mail e WhatsApp automatici'}]}
 ];
+// marketing: solo quello che serve per i soldi persi (locale, incasso) e per il marketing
+const Q = isM ? Q_ALL.filter(q=>['tipo','vendite','mkt','contatti'].includes(q.id)) : Q_ALL;
+const NO_NS = ['tipo'];   // «Non lo so» su tutte le domande tranne il tipo di locale
 const ANSWER_KEY = {tipo:'tipo',ce:'ce',schede:'schede',contatti:'contatti'};
 let qi=0;
 
 /* ---------- HOME ---------- */
+const ARROW='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+// pagina di scelta: si arriva qui solo senza /numeri o /marketing nell'indirizzo
+function chooser(){
+  document.getElementById('mobBar').hidden=true;
+  app.innerHTML='';
+  app.appendChild(h(`<section class="screen home">
+    <div class="eyebrow">Check-up gratuito del ristorante</div>
+    <h1>Qual è il tuo <em>problema</em>?</h1>
+    <p class="lead">Scegli da dove partire. In 2 minuti vedi il punteggio del tuo locale, dove perdi soldi e cosa sistemare per primo.</p>
+    <div class="pick">
+      <a href="${modeHref('numeri')}"><span class="eyebrow">Check-up dei numeri</span><h2>Incasso tanto ma non mi resta niente</h2><p>Food cost, personale, costi fissi: scopri il tuo margine vero e dove se ne vanno i soldi.</p><span class="go">Inizia ${ARROW}</span></a>
+      <a href="${modeHref('marketing')}"><span class="eyebrow">Check-up del marketing</span><h2>Il locale non è abbastanza pieno</h2><p>Google Maps, recensioni, sito, Instagram, campagne: scopri come ti trovano i clienti e dove sei rispetto ai concorrenti.</p><span class="go">Inizia ${ARROW}</span></a>
+    </div>
+    <div class="trust"><span><b>Gratis</b></span><span><b>2 minuti</b></span><span>Nessun documento da caricare</span></div>
+  </section>`));
+}
+const COPY = isM ? {
+  eb:'Check-up gratuito del marketing', h1:'Perché il tuo locale <em>non è pieno</em>?',
+  lead:'Analizziamo come ti trovano i clienti: posizione su Google Maps, recensioni, sito, Instagram, campagne e delivery. In 2 minuti vedi dove sei rispetto ai concorrenti e quanti clienti stai lasciando agli altri.',
+  chips:[['G','Come mi trovano su Google?'],['★','Le mie recensioni mi aiutano?'],['↑','Quanti clienti sto perdendo?']],
+  pv:[[62,'var(--warn)','62/100'],['Posizione su Google Maps','7°',true],['Recensioni senza risposta','17 su 20',true]]
+} : {
+  eb:'Check-up gratuito dei numeri', h1:'Incassi tanto ma <em>ti resta poco</em>?',
+  lead:'Rispondi a 10 domande sui tuoi numeri: incassi, fornitori, personale, costi fissi. In 2 minuti vedi il tuo margine vero, dove perdi soldi e quanto puoi recuperare. Se un numero non lo sai, va bene lo stesso.',
+  chips:[['%','Il mio food cost è giusto?'],['€','Il personale mi costa troppo?'],['↑','Quanto margine sto lasciando sul tavolo?']],
+  pv:[[58,'var(--warn)','58/100'],['Soldi lasciati sul tavolo','−3.900 € al mese',true],['Food cost','34% <span style="font-size:14px;color:var(--muted);font-weight:600">obiettivo 28%</span>']]
+};
 function home(){
+  if(!MODE) return chooser();
   document.getElementById('mobBar').hidden=true;
   app.innerHTML='';
   const el=h(`<section class="screen home">
-    <div class="eyebrow">Check-up gratuito del ristorante</div>
-    <h1>Quanto guadagna <em>davvero</em> il tuo ristorante?</h1>
-    <p class="lead">Analizziamo la tua presenza online (Google, sito, Instagram, campagne, delivery) e i tuoi numeri con 10 domande. In 2 minuti vedi il punteggio del locale, dove perdi soldi e quanto margine in più puoi portare a casa.</p>
+    <div class="eyebrow">${COPY.eb}</div>
+    <h1>${COPY.h1}</h1>
+    <p class="lead">${COPY.lead}</p>
     <form class="search" id="startForm" autocomplete="off">
       <label for="nome"><small>Il tuo locale</small><input id="nome" placeholder="Es. Trattoria da Mario" value="${esc(S.nome)}" required></label>
       <label for="citta"><small>Città</small><input id="citta" placeholder="Es. Roma" value="${esc(S.citta)}"></label>
-      <button class="go" type="submit">Inizia <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <button class="go" type="submit">Inizia ${ARROW}</button>
     </form>
-    <div class="chips">
-      <button class="chip" type="button" data-f="nome"><i>%</i>Il mio food cost è giusto?</button>
-      <button class="chip" type="button" data-f="nome"><i>G</i>Come mi trovano su Google?</button>
-      <button class="chip" type="button" data-f="nome"><i>↑</i>Quanto margine sto lasciando sul tavolo?</button>
-    </div>
+    <div class="chips">${COPY.chips.map(c=>`<button class="chip" type="button" data-f="nome"><i>${c[0]}</i>${c[1]}</button>`).join('')}</div>
     <div class="trust"><span><b>Gratis</b></span><span><b>2 minuti</b></span><span>Nessun documento da caricare</span><span><button class="linkish" id="demoBtn" type="button">Guarda un esempio</button></span></div>
     <div class="previews" aria-hidden="true">
-      <div class="pv">${ringSVG(54,6,.58,'var(--warn)')}<div><div class="k">Punteggio</div><div class="v num">58/100</div></div></div>
-      <div class="pv"><div><div class="k">Soldi lasciati sul tavolo</div><div class="v red num">−3.900 € al mese</div></div></div>
-      <div class="pv"><div><div class="k">Food cost</div><div class="v num">34% <span style="font-size:14px;color:var(--muted);font-weight:600">obiettivo 28%</span></div></div></div>
+      <div class="pv">${ringSVG(54,6,COPY.pv[0][0]/100,COPY.pv[0][1])}<div><div class="k">Punteggio</div><div class="v num">${COPY.pv[0][2]}</div></div></div>
+      ${COPY.pv.slice(1).map(x=>`<div class="pv"><div><div class="k">${x[0]}</div><div class="v ${x[2]?'red':''} num">${x[1]}</div></div></div>`).join('')}
     </div>
   </section>`);
   app.appendChild(el);
@@ -733,7 +783,7 @@ function home(){
     S.demo=false; qi=0; startOnline(); quiz();});
   el.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>el.querySelector('#nome').focus()));
   el.querySelector('#demoBtn').addEventListener('click',()=>{
-    Object.assign(S,{nome:'Trattoria Esempio',citta:'Roma',tipo:'trattoria',incasso:70000,scontrino:34,fornitori:22300,personale:22500,affitto:5800,altri:5200,mkt:400,nonSo:false,ce:1,schede:0,contatti:1,demo:true});
+    Object.assign(S,{nome:'Trattoria Esempio',citta:'Roma',tipo:'trattoria',incasso:70000,scontrino:34,fornitori:22300,personale:22500,affitto:5800,altri:5200,mkt:400,ns:{},ce:1,schede:0,contatti:1,demo:true});
     startOnline(); scan();});
 }
 
@@ -758,7 +808,7 @@ function attachAutocomplete(form,inp){
 /* ---------- QUIZ ---------- */
 function quiz(){
   app.innerHTML='';
-  const el=h(`<section class="screen quiz">
+  const el=h(`<section class="screen quiz ${isM?'solo':''}">
     <div>
       <div class="qhead">
         <button class="back" id="back" aria-label="Domanda precedente"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
@@ -767,13 +817,13 @@ function quiz(){
       </div>
       <div class="qbody" id="qbody"></div>
     </div>
-    <aside class="receipt-col" aria-label="Il tuo conto economico in tempo reale">
+    ${isM?'':`<aside class="receipt-col" aria-label="Il tuo conto economico in tempo reale">
       <div class="receipt-cap"><span class="dot"></span>Il tuo conto economico, in tempo reale</div>
       <div class="receipt" id="liveReceipt"></div>
-    </aside>
+    </aside>`}
   </section>`);
   app.appendChild(el);
-  document.getElementById('mobBar').hidden=false;
+  document.getElementById('mobBar').hidden=isM;
   el.querySelector('#back').addEventListener('click',()=>{if(qi>0){qi--;renderQ();}});
   renderQ();
 }
@@ -814,24 +864,25 @@ function renderQ(){
   body.classList.remove('anim'); void body.offsetWidth; body.classList.add('anim');
   let inner=`<div class="eyebrow">${q.eb}</div><h2>${q.title}</h2><p class="desc">${q.desc}</p>`;
   if(q.kind==='choice'){
-    const cur = S[ANSWER_KEY[q.id]];
-    inner+=`<div class="opts ${q.list?'list':''}" role="radiogroup">${q.opts.map((o,i)=>{
-      const v=o.v??i; const sel=cur===v;
-      return `<button class="opt ${sel?'sel':''}" role="radio" aria-checked="${sel}" data-v="${o.v??i}"><span class="key">${String.fromCharCode(65+i)}</span><span><b>${o.b}</b>${o.s?`<small>${o.s}</small>`:''}</span></button>`;}).join('')}</div>`;
+    const cur = S[ANSWER_KEY[q.id]], ns=!!S.ns[q.id];
+    const opts = NO_NS.includes(q.id) ? q.opts : q.opts.concat([{v:'ns',b:'Non lo so'}]);
+    inner+=`<div class="opts ${q.list?'list':''}" role="radiogroup">${opts.map((o,i)=>{
+      const v=o.v??i; const sel= v==='ns' ? ns : (!ns && cur===v);
+      return `<button class="opt ${v==='ns'?'ns':''} ${sel?'sel':''}" role="radio" aria-checked="${sel}" data-v="${o.v??i}"><span class="key">${String.fromCharCode(65+i)}</span><span><b>${o.b}</b>${o.s?`<small>${o.s}</small>`:''}</span></button>`;}).join('')}</div>`;
   } else {
     inner+=q.keys.map(k=>`<div class="sl" data-k="${k}">
       <div class="sl-top"><label for="r-${k}">${SL[k].label}</label><div class="sl-val num" id="v-${k}"></div></div>
       <div class="track"><input type="range" id="r-${k}"><div class="tick" id="t-${k}" hidden><span>${SL[k].tlabel||''}</span></div></div>
       <div class="sl-hint" id="h-${k}"></div></div>`).join('');
-    if(q.nonSo) inner+=`<label class="check" for="nonso"><input type="checkbox" id="nonso" ${S.nonSo?'checked':''}> Non lo so con precisione, ho messo una stima</label>`;
-    inner+=`<div><button class="next" id="nextBtn">${qi===Q.length-1?'Analizza il mio locale':'Continua'} <kbd>Invio</kbd></button></div>`;
+    inner+=`<div><button class="next" id="nextBtn">${qi===Q.length-1?'Analizza il mio locale':'Continua'} <kbd>Invio</kbd></button>${NO_NS.includes(q.id)?'':`<button class="next alt" id="nsBtn">Non lo so</button>`}</div>`;
+    if(S.ns[q.id]) inner+=`<p class="check" style="cursor:default">Hai risposto «Non lo so»: abbiamo messo il valore tipico per un locale come il tuo.</p>`;
   }
   body.innerHTML=inner;
   if(q.kind==='choice'){
     body.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
-      const raw=b.dataset.v; const v= q.id==='tipo'? raw : Number(raw);
+      const raw=b.dataset.v; const ns=raw==='ns'; const v= q.id==='tipo'? raw : ns? 0 : Number(raw);
       if(q.id==='tipo' && S.tipo!==v){ S.tipo=v; S.scontrino=null; S.fornitori=null; }
-      S[ANSWER_KEY[q.id]]=v;
+      S[ANSWER_KEY[q.id]]=v; S.ns[q.id]=ns;
       body.querySelectorAll('.opt').forEach(x=>{x.classList.toggle('sel',x===b);x.setAttribute('aria-checked',x===b);});
       setTimeout(advance, reduce?0:260);
     }));
@@ -852,9 +903,12 @@ function renderQ(){
         if(k==='scontrino'){/* ok */}
         renderReceipt(k);
       };
-      r.addEventListener('input',upd); upd();
+      r.addEventListener('input',()=>{ S.ns[q.id]=false; upd(); }); upd();
     });
-    const ns=document.getElementById('nonso'); if(ns) ns.addEventListener('change',()=>S.nonSo=ns.checked);
+    // «Non lo so»: rimette il valore tipico per il tipo di locale e va avanti
+    const nb=document.getElementById('nsBtn'); if(nb) nb.addEventListener('click',()=>{
+      q.keys.forEach(k=>{ if(k==='incasso') S.incasso=60000; else S[k]=null; });
+      S.ns[q.id]=true; defaults(); advance(); });
     document.getElementById('nextBtn').addEventListener('click',advance);
   }
   renderReceipt();
@@ -912,6 +966,7 @@ function fromServer(st){
 function startOnline(){
   S.online=null; S.scanId=null;
   S.onlineP = cfgReady.then(c=>{
+    if(isN) return {...emptyOnline(),source:'salta'};
     if(!c.live || S.demo) return exampleOnline();
     return fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({placeId:S.place?.id||null,nome:S.nome,citta:S.citta,session:S.session})})
       .then(r=>r.json()).then(j=>{ if(!j.id) throw new Error(j.error||'scan'); S.scanId=j.id; return pollScan(j.id); })
@@ -1041,14 +1096,16 @@ async function scan(){
   let o=S.online;
   if(!o||!o.sito) o=S.online=(o&&o.source==='errore'&&S.online&&S.online.sito)?S.online:emptyOnline();
   const c=compute(), t=typeOf();
-  const steps=['Google e concorrenti','Recensioni e risposte','Sito web e velocità','Instagram e campagne Meta','Delivery e promozioni','Incassi e scontrino medio','Food cost e fornitori','Costo del personale','Costi fissi','Margine operativo','Confronto con il settore'];
+  const ALL=[['Google e concorrenti',visMap,1],['Recensioni e risposte',visReviews,1],['Sito web e velocità',visSite,1],['Instagram e campagne Meta',visSocial,1],['Delivery e promozioni',visDelivery,1],
+    ['Incassi e scontrino medio',visReceipt,0],['Food cost e fornitori',visFood,0],['Costo del personale',visShifts,0],['Costi fissi',visBills,0],['Margine operativo',visWaterfall,0],['Confronto con il settore',visBench,0]];
+  const ST=ALL.filter(x=>isM?x[2]:isN?!x[2]:true), steps=ST.map(x=>x[0]);
   const STEP=reduce?300:2900, TOTAL=STEP*steps.length;
   app.innerHTML='';
   const el=h(`<section class="screen scan">
     <aside class="scan-side">
       <h3>Analisi in corso…</h3>
       <div class="sub">${esc(o.name||S.nome)}${(o.city||S.citta)?' · '+esc(o.city||S.citta):''}</div>
-      <ul class="steps">${steps.map((s,i)=>(i===0?'<li class="sep">Presenza online</li>':i===5?'<li class="sep">Conto economico</li>':'')+`<li class="st"><span class="ic"></span>${s}</li>`).join('')}</ul>
+      <ul class="steps">${ST.map((x,i)=>(x[2]&&i===0?'<li class="sep">Presenza online</li>':!x[2]&&(i===0||ST[i-1][2])?'<li class="sep">Conto economico</li>':'')+`<li class="st"><span class="ic"></span>${x[0]}</li>`).join('')}</ul>
       <div class="timer"><i class="tbar" id="tbar" style="width:0"></i><span class="spin"></span><span id="tleft" class="num"></span></div>
     </aside>
     <div class="stage" id="stage"><div class="scanline"></div></div>
@@ -1060,7 +1117,6 @@ async function scan(){
     const tl=document.getElementById('tleft'); if(!tl){clearInterval(tick);return;}
     tl.textContent= left>0? `${left} secondi rimanenti` : 'Quasi pronto…';
     document.getElementById('tbar').style.width=clamp((Date.now()-t0)/TOTAL)*100+'%';},250);
-  const visuals=[visMap,visReviews,visSite,visSocial,visDelivery,visReceipt,visFood,visShifts,visBills,visWaterfall,visBench];
   let i=0;
   (function run(){
     if(!document.body.contains(stage)) return;
@@ -1068,7 +1124,7 @@ async function scan(){
     if(i>=steps.length){clearInterval(tick); setTimeout(report, reduce?0:500); return;}
     el.querySelector('.scan-side h3').textContent= window.innerWidth<=980? steps[i]+'…' : 'Analisi in corso…';
     const old=stage.querySelector('.vis'); if(old){old.classList.add('out');setTimeout(()=>old.remove(),400);}
-    const v=h(`<div class="vis"></div>`); stage.appendChild(v); const fn=visuals[i]; i<5?fn(v,(S.online&&S.online.sito)?S.online:o):fn(v,c,t);
+    const v=h(`<div class="vis"></div>`); stage.appendChild(v); const [,fn,isOnline]=ST[i]; isOnline?fn(v,(S.online&&S.online.sito)?S.online:o):fn(v,c,t);
     i++; setTimeout(run,STEP);
   })();
 }
@@ -1155,11 +1211,18 @@ function report(){
   const c=compute(), sc=scores(c,o), pr=problems(c,o), [gl,gc]=grade(sc.tot), t=typeOf();
   const oc=onlineChecks(o), rk=o.ranking, above=rk?rk.list.findIndex(r=>r.me):-1;
   const hasOrg=(o.queries||[]).some(q=>q.org!=null);
-  S.reportData={score:sc.tot,grade:gl,A:sc.A,B:sc.B,C:sc.C,D:sc.D,netto:c.netto,ebitPct:Math.round(c.ep*10)/10,fc:Math.round(c.fc),pers:Math.round(c.pp),lossM:pr.reduce((a,p)=>a+p.e,0)/12,problemi:pr.map(p=>p.t),tipo:t.label,mapsUri:o.google?.mapsUri||null,lordo:S.incasso*12,scontrino:S.scontrino,address:o.address||null,crm:['No','Qualche numero su WhatsApp','Sì, ma non li usa','Sì, con mail e WhatsApp automatici'][S.contatti??0]};
+  S.reportData={score:sc.tot,grade:gl,A:sc.A,B:sc.B,C:sc.C,D:sc.D,netto:c.netto,ebitPct:Math.round(c.ep*10)/10,fc:Math.round(c.fc),pers:Math.round(c.pp),lossM:pr.reduce((a,p)=>a+p.e,0)/12,problemi:pr.map(p=>p.t),tipo:t.label,mapsUri:o.google?.mapsUri||null,lordo:S.incasso*12,scontrino:S.scontrino,address:o.address||null,crm:S.ns.contatti?'Non lo sa':['No','Qualche numero su WhatsApp','Sì, ma non li usa','Sì, con mail e WhatsApp automatici'][S.contatti??0],
+    versione:MODE||'completo',nonSo:Q.filter(q=>S.ns[q.id]).map(q=>q.eb)};
+  if(isM){ delete S.reportData.fc; delete S.reportData.pers; delete S.reportData.ebitPct; }
   const lossY=pr.reduce((a,p)=>a+p.e,0);
   const items=checklist(c);
-  const bad=items.filter(i=>i.s!=='ok').length+oc.filter(i=>i.w&&i.s!=='ok'&&i.s!=='na').length, nItems=items.length+oc.filter(i=>i.w&&i.s!=='na').length;
-  const subs=[['Presenza online',sc.D,35,'','a-onl'],['Margini',sc.A,30,'','a-mar'],['Controllo',sc.B,20,'','a-con'],['Clienti e marketing',sc.C,15,'','a-cre']];
+  // aree della versione: marketing = presenza online + clienti; numeri = margini + controllo + clienti
+  const AREAS=[['a-onl','Presenza online','Come ti trovano e ti scelgono, prima di entrare',sc.D,35,oc,o.source==='esempio',!isN],
+    ['a-mar','Margini','Quanto ti resta di ogni euro incassato',sc.A,30,items.filter(i=>i.a==='A'),false,!isM],
+    ['a-con','Controllo','Se i numeri li guidi tu o ti guidano loro',sc.B,20,items.filter(i=>i.a==='B'),false,!isM],
+    ['a-cre','Clienti e marketing','Clienti nuovi e clienti che tornano',sc.C,15,items.filter(i=>i.a==='C'),false,true]].filter(a=>a[7]);
+  const cnt=AREAS.flatMap(a=>a[5]).filter(i=>!i.grp&&i.s!=='na'), bad=cnt.filter(i=>i.s!=='ok').length, nItems=cnt.length;
+  const subs=AREAS.map(a=>[a[1],a[3],a[4],'',a[0]]);
   app.innerHTML='';
   const el=h(`<section class="screen report">
     <aside class="score-panel">
@@ -1168,7 +1231,7 @@ function report(){
       <div class="grade" style="color:${gc}">${gl}</div>
       <div class="subs">${subs.map(s=>{const [l,col]=subGrade(s[1]/s[2]);return `<button class="subrow" data-go="${s[4]}">${ringSVG(34,4.5,s[1]/s[2],col,true)}<span><b>${s[0]}</b><small style="color:${col}">${l}</small></span><span class="sc num">${s[1]}/${s[2]}</span></button>`;}).join('')}</div>
       <button class="cta" data-cta>Prenota l'analisi gratuita</button>
-      <div class="panel-note">30 minuti in call sul tuo conto economico vero.</div>
+      <div class="panel-note">${isM?'30 minuti in call su come portarti più clienti.':'30 minuti in call sul tuo conto economico vero.'}</div>
     </aside>
     <div class="rmain locked" id="rmain">
       <div class="rcontent">
@@ -1179,7 +1242,7 @@ function report(){
             <ul class="plist">${pr.slice(0,4).map(p=>`<li><span class="tri"></span><span>${p.t}</span><span class="eur num">−${eur(p.e/12)}/mese</span></li>`).join('')}</ul>
             ${pr.length>4?`<div class="more">+ altri ${pr.length-4} problemi nel report</div>`:''}
           </div>
-          <div class="card">
+          ${isM?rankCard(o,rk,above):`<div class="card">
             <h3 class="t">Il tuo margine operativo</h3>
             <div class="st">Quello che resta dopo fornitori, personale e costi fissi</div>
             <div class="ebit-big num" style="color:${c.ep>=T_EBIT?'var(--good)':c.ep>=8?'var(--warn)':'var(--bad)'}">${pct(c.ep,1)}</div>
@@ -1187,15 +1250,10 @@ function report(){
             <div class="bench" style="box-shadow:none;border:0;padding:0;width:100%;margin-top:6px">
               <div class="zone" style="margin-top:64px;height:44px"><div>&lt;5%</div><div>5–10%</div><div>10–15%</div><div>15%+</div>
               <div class="you" id="you2" style="left:0%"><span>Tu · ${pct(c.ep)}</span><i style="height:50px"></i></div></div></div>
-          </div>
+          </div>`}
         </div>
-        ${rk?`<div class="row2">
-          <div class="card">
-            <div style="display:flex;justify-content:space-between;gap:10px;align-items:start;flex-wrap:wrap"><h3 class="t">${above>0?`Sei sotto ${above} concorrenti su Google Maps`:above===0?'Sei primo su Google Maps':'Non compari tra i primi su Google Maps'}</h3>${o.source==='esempio'?'<span class="expill">Dati di esempio</span>':''}</div>
-            <div class="st">Ricerca «${esc(rk.query)}»</div>
-            <ol class="rank">${rk.list.map((r,i)=>`<li class="${r.me?'me':''}"><span class="p">${r.me&&rk.pos?rk.pos:i+1}°</span><span class="nm">${r.me?esc(o.name||S.nome):esc(r.n)}</span><span class="rt">${r.r!=null?`<em>★</em> ${r.r.toFixed(1).replace('.',',')} · `:''}${dot(r.v||0)}</span></li>`).join('')}</ol>
-            ${o.source==='live'?'<div class="gattrib">Dati: Google Maps</div>':''}
-          </div>
+        ${rk&&!isN?`<div class="${isM?'':'row2'}">
+          ${isM?'':rankCard(o,rk,above)}
           <div class="card">
             <div style="display:flex;justify-content:space-between;gap:10px;align-items:start;flex-wrap:wrap"><h3 class="t">Dove compari quando ti cercano</h3>${o.source==='esempio'?'<span class="expill">Dati di esempio</span>':''}</div>
             <div class="st">Posizione su Google Maps e nei risultati di ricerca</div>
@@ -1204,16 +1262,13 @@ function report(){
             </tbody></table></div>
           </div>
         </div>`:''}
-        <div class="card">
+        ${isM?'':`<div class="card">
           <div class="sec-h" style="margin:0 0 12px"><div><h3 class="t">Il tuo conto economico in un colpo d'occhio</h3><p class="st" style="margin:4px 0 0">Stima annua dalle tue risposte</p></div>
           <div class="legend"><span><i style="background:var(--ink)"></i>Fatturato netto</span><span><i style="background:var(--red)"></i>Costi</span><span><i style="background:var(--good)"></i>Margine</span></div></div>
           <div id="wfHolder"></div>
-        </div>
+        </div>`}
         <div class="sec-h"><div><h2>${nItems} controlli, ${bad} da sistemare</h2><p>Ecco cosa funziona e cosa ti fa perdere soldi.</p></div></div>
-        ${areaBlock('a-onl','1','Presenza online','Come ti trovano e ti scelgono, prima di entrare',sc.D,35,oc,o.source==='esempio')}
-        ${areaBlock('a-mar','2','Margini','Quanto ti resta di ogni euro incassato',sc.A,30,items.filter(i=>i.a==='A'))}
-        ${areaBlock('a-con','3','Controllo','Se i numeri li guidi tu o ti guidano loro',sc.B,20,items.filter(i=>i.a==='B'))}
-        ${areaBlock('a-cre','4','Clienti e marketing','Clienti nuovi e clienti che tornano',sc.C,15,items.filter(i=>i.a==='C'))}
+        ${AREAS.map((a,i)=>areaBlock(a[0],String(i+1),a[1],a[2],a[3],a[4],a[5],a[6])).join('')}
         <div id="simHolder"></div>
         <div class="sec-h"><div><h2>Come lavoriamo</h2><p>Sempre nello stesso ordine: prima i numeri, poi il menu, poi il marketing.</p></div></div>
         <div class="method">
@@ -1223,8 +1278,8 @@ function report(){
         </div>
         <div class="card final">
           <div class="eyebrow">Il prossimo passo</div>
-          <h2>Guardiamo insieme il tuo conto economico vero</h2>
-          <p>Una call di 30 minuti con un consulente RBR. Ti diciamo dove intervenire per primo e quanto vale, con i tuoi numeri.</p>
+          <h2>${isM?'Guardiamo insieme come riempire il tuo locale':'Guardiamo insieme il tuo conto economico vero'}</h2>
+          <p>Una call di 30 minuti con un consulente RBR. Ti diciamo dove intervenire per primo e quanto vale, ${isM?'partendo da quello che abbiamo trovato online':'con i tuoi numeri'}.</p>
           <button class="cta" data-cta>Prenota l'analisi gratuita</button>
         </div>
         <p class="disc">Stima basata sulle tue risposte, sui dati pubblici del locale e su riferimenti di settore per la ristorazione italiana. Non è una consulenza: i numeri precisi li calcoliamo insieme sulle tue fatture e sui dati di cassa.</p>
@@ -1233,7 +1288,7 @@ function report(){
         <div class="gate-box" role="dialog" aria-modal="true" aria-labelledby="gateT">
           <div class="lock"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
           <h3 id="gateT">Sblocca il report completo</h3>
-          <p>Vedi dove perdi <b class="num" style="color:var(--bad)">${eur(lossY)}</b> l'anno e quanto ti possiamo portare in più.</p>
+          <p>Vedi dove perdi <b class="num" style="color:var(--bad)">${eur(lossY)}</b> l'anno e ${isM?'quanti clienti in più puoi portare nel locale':'quanto ti possiamo portare in più'}.</p>
           <form id="gateForm" novalidate>
             <input class="hp" id="g-web" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
             <label class="field" for="g-nome"><span>Nome e cognome</span><input id="g-nome" autocomplete="name" required></label>
@@ -1273,17 +1328,26 @@ function report(){
       const btn=form.querySelector('button[type=submit]'); btn.disabled=true; btn.textContent='Un attimo…';
       const eventId='lead-'+uuid();
       try{ await fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...S.lead,website:form.querySelector('#g-web').value,t:gateT0,locale:S.online?.name||S.nome,citta:S.online?.city||S.citta,utm:S.utm,report:S.reportData,eventId,consenso:getConsent()==='si',fbp:cookieVal('_fbp'),fbc:cookieVal('_fbc')||(S.utm.fbclid?`fb.1.${Date.now()}.${S.utm.fbclid}`:null),pagina:location.href.split('#')[0]})}); }catch(err){}
-      track('Lead',{content_name:'checkup-ristorante'},eventId);
+      track('Lead',{content_name:'checkup-'+(MODE||'ristorante')},eventId);
     }
     unlock();
   });
   const sk=el.querySelector('#skipGate'); if(sk) sk.addEventListener('click',unlock);
 }
+function rankCard(o,rk,above){
+  if(!rk) return `<div class="card"><h3 class="t">Posizione su Google Maps</h3><div class="st">Non siamo riusciti a leggere la ricerca su Maps: la guardiamo insieme in call.</div></div>`;
+  return `<div class="card">
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:start;flex-wrap:wrap"><h3 class="t">${above>0?`Sei sotto ${above} concorrenti su Google Maps`:above===0?'Sei primo su Google Maps':'Non compari tra i primi su Google Maps'}</h3>${o.source==='esempio'?'<span class="expill">Dati di esempio</span>':''}</div>
+            <div class="st">Ricerca «${esc(rk.query)}»</div>
+            <ol class="rank">${rk.list.map((r,i)=>`<li class="${r.me?'me':''}"><span class="p">${r.me&&rk.pos?rk.pos:i+1}°</span><span class="nm">${r.me?esc(o.name||S.nome):esc(r.n)}</span><span class="rt">${r.r!=null?`<em>★</em> ${r.r.toFixed(1).replace('.',',')} · `:''}${dot(r.v||0)}</span></li>`).join('')}</ol>
+            ${o.source==='live'?'<div class="gattrib">Dati: Google Maps</div>':''}
+          </div>`;
+}
 function unlock(){
   const rm=document.getElementById('rmain'); rm.classList.remove('locked'); document.getElementById('gate').remove();
   toast('Report sbloccato');
   const c=compute();
-  document.getElementById('wfHolder').innerHTML=waterfallSVG(c);
+  const wf=document.getElementById('wfHolder'); if(wf) wf.innerHTML=waterfallSVG(c);
   setTimeout(()=>placeYou(document.getElementById('you2'),c.ep),200);
   document.querySelectorAll('.area .ring .fg').forEach(f=>{requestAnimationFrame(()=>requestAnimationFrame(()=>f.style.strokeDashoffset=f.dataset.off));});
   simulator(c);
@@ -1307,10 +1371,11 @@ function checklist(c){
   L.push({a:'A',s:status(c.op,T_ALTRI,1.5),t:'Altri costi fissi sotto il 7%',v:pct(c.op),d:'Utenze, servizi, software: contratti da rinegoziare una volta l’anno.'});
   L.push({a:'A',s:c.ep>=T_EBIT?'ok':c.ep>=8?'warn':'bad',t:'Margine operativo sopra il 15%',v:pct(c.ep),d:`Oggi ti restano ${eur(c.ebit/12)} al mese. Con il 15% sarebbero ${eur(n*.15/12)}.`});
   const ce=S.ce??0, sch=S.schede??0, con=S.contatti??0;
-  L.push({a:'B',s:ce>=2?'ok':ce===1?'warn':'bad',t:'Conto economico ogni mese',v:['Mai','1 volta l’anno','Mensile','Settimanale'][ce],d:ce>=2?'Ottimo: chi guarda i numeri ogni mese corregge prima.':'A fine anno è tardi: un costo che sale a febbraio lo scopri a marzo dell’anno dopo.'});
-  L.push({a:'B',s:sch>=2?'ok':sch===1?'warn':'bad',t:'Scheda food cost per ogni piatto',v:['Nessuna','Vecchia','Recente','Aggiornata'][sch],d:sch>=2?'Hai la base per il menu engineering.':'Senza schede non sai quali piatti ti fanno guadagnare e quali ti costano.'});
-  L.push({a:'B',s:S.nonSo?'warn':'ok',t:'Spesa fornitori sotto controllo',v:S.nonSo?'Stimata':'Nota',d:S.nonSo?'Non conosci con precisione quanto spendi: è il primo numero da ricostruire dalle fatture.':'Conosci la tua spesa: è il punto di partenza.'});
-  L.push({a:'C',s:con===3?'ok':con===2?'warn':'bad',t:'Database clienti attivo',v:['Nessuno','Sparso','Fermo','Automatico'][con],d:con===3?'Bene: i clienti che tornano costano zero in pubblicità.':'Ogni cliente che entra e non lascia il contatto è un cliente che devi ricomprare con la pubblicità.'});
+  L.push({a:'B',s:ce>=2?'ok':ce===1?'warn':'bad',t:'Conto economico ogni mese',v:S.ns.ce?'Non lo sa':['Mai','1 volta l’anno','Mensile','Settimanale'][ce],d:ce>=2?'Ottimo: chi guarda i numeri ogni mese corregge prima.':'A fine anno è tardi: un costo che sale a febbraio lo scopri a marzo dell’anno dopo.'});
+  L.push({a:'B',s:sch>=2?'ok':sch===1?'warn':'bad',t:'Scheda food cost per ogni piatto',v:S.ns.schede?'Non lo sa':['Nessuna','Vecchia','Recente','Aggiornata'][sch],d:sch>=2?'Hai la base per il menu engineering.':'Senza schede non sai quali piatti ti fanno guadagnare e quali ti costano.'});
+  const nn=nsNum();
+  L.push({a:'B',s:nn?'warn':'ok',t:'Numeri del locale sotto controllo',v:nn?`${nn} non noti`:'Noti',d:nn?'Alcuni numeri non li conosci: li abbiamo stimati. Sono i primi da ricostruire dalle fatture, perché senza non sai dove intervenire.':'Conosci i tuoi numeri: è il punto di partenza.'});
+  L.push({a:'C',s:con===3?'ok':con===2?'warn':'bad',t:'Database clienti attivo',v:S.ns.contatti?'Non lo sa':['Nessuno','Sparso','Fermo','Automatico'][con],d:con===3?'Bene: i clienti che tornano costano zero in pubblicità.':'Ogni cliente che entra e non lascia il contatto è un cliente che devi ricomprare con la pubblicità.'});
   L.push({a:'C',s:c.mp>=2&&c.mp<=5.5?'ok':c.mp>=1?'warn':'bad',t:'Budget marketing tra 2% e 5%',v:pct(c.mp,1),d:c.mp<2?'Il marketing si misura in costo per prenotazione, non in like.':'Bene. Misuri quanto ti costa ogni prenotazione?'});
   L.forEach(x=>{if(x.s==='good')x.s='ok';});
   return L;
@@ -1322,11 +1387,14 @@ function simulator(c){
   const persMax=Math.floor(Math.max(0,c.pp-25)*2)/2;
   const half=x=>Math.round(x*2)/2;
   const P={fc:half(Math.min(c.fc,c.fcT)), sc:5, cl:(S.contatti??0)<3?8:4, pe:half(Math.min(Math.max(0,c.pp-T_PERS),2))};
+  // marketing: solo la leva dei clienti in più (le altre restano ferme a oggi)
+  const ON=isM?['cl']:['fc','sc','cl','pe'];
+  if(isM){ P.fc=half(Math.min(c.fc,fcMax)); P.sc=0; P.pe=0; P.cl=(S.contatti??0)<3?12:6; }
   const holder=document.getElementById('simHolder');
   holder.innerHTML=`<section class="sim" id="sim">
     <div class="eyebrow">Simulazione</div>
     <h2>Quanto ti possiamo portare</h2>
-    <p class="intro">Muovi le leve e guarda cosa cambia sul tuo margine. I valori di partenza sono quelli che otteniamo di solito su locali come il tuo.</p>
+    <p class="intro">${isM?'Muovi la leva e guarda cosa valgono i clienti in più sul tuo margine. Il valore di partenza è quello che otteniamo di solito su locali come il tuo.':'Muovi le leve e guarda cosa cambia sul tuo margine. I valori di partenza sono quelli che otteniamo di solito su locali come il tuo.'}</p>
     <div class="sim-grid">
       <div class="levers">
         ${lever('fc','Menu ingegnerizzato','Food cost dopo il nuovo menu',fcMin,fcMax,.5,P.fc,v=>pct(v,1),`da ${pct(c.fc,1)}`,'obiettivo '+c.fcT+'%')}
@@ -1339,16 +1407,16 @@ function simulator(c){
         <div class="out-sub">di margine in più all'anno a regime · <b id="oMonth" class="num"></b> al mese</div>
         <div class="compare">
           <span>Oggi</span><span class="cb"><i id="cbNow" style="width:0;background:var(--stage-muted)"></i></span><span class="cv num" id="cvNow"></span>
-          <span>Con RBR</span><span class="cb"><i id="cbNew" style="width:0;background:#FF3A3F"></i></span><span class="cv num" id="cvNew"></span>
+          <span>Con RBR</span><span class="cb"><i id="cbNew" style="width:0;background:#D90A0F"></i></span><span class="cv num" id="cvNew"></span>
         </div>
         <div class="tl" id="tl"></div>
         <div class="brk" id="brk"></div>
       </div>
     </div>
-    <div class="proof">Un caso reale: in un ristorante che seguiamo lo scontrino medio è passato <b>da 95 € a 112 €</b> dopo il menu ingegnerizzato. Stessi clienti, più margine su ogni tavolo.</div>
+    ${isM?'':`<div class="proof">Un caso reale: in un ristorante che seguiamo lo scontrino medio è passato <b>da 95 € a 112 €</b> dopo il menu ingegnerizzato. Stessi clienti, più margine su ogni tavolo.</div>`}
   </section>`;
   const firstRun={v:true};
-  ['fc','sc','cl','pe'].forEach(k=>{const r=document.getElementById('lv-'+k); r.addEventListener('input',()=>{P[k]=Number(r.value);paint();}); });
+  ['fc','sc','cl','pe'].forEach(k=>{const r=document.getElementById('lv-'+k); r.addEventListener('input',()=>{P[k]=Number(r.value);paint();}); if(!ON.includes(k)) r.closest('.lever').hidden=true; });
   if(persMax<=0){const r=document.getElementById('lv-pe'); r.disabled=true; r.closest('.lever').style.opacity=.5;}
   let lastBig=0;
   function paint(){
@@ -1361,7 +1429,7 @@ function simulator(c){
     const delta=fcSave+peSave+scGain+clGain;
     const netNew=n*(1+s)*(1+cl), ebNew=c.ebit+delta, epNew=ebNew/netNew*100;
     // anno 1 mese per mese
-    const rFC=m=>m<3?0:m===3?.5:1, rPE=m=>m<2?0:m===2?.5:1, rSC=m=>m<4?0:m===4?.5:1, rCL=m=>m<5?0:Math.min(1,(m-4)/8);
+    const rFC=m=>m<3?0:m===3?.5:1, rPE=m=>m<2?0:m===2?.5:1, rSC=m=>m<4?0:m===4?.5:1, rCL=isM?m=>Math.min(1,m/6):m=>m<5?0:Math.min(1,(m-4)/8);
     const cum=[]; let acc=0;
     for(let m=1;m<=12;m++){acc+=(fcSave*rFC(m)+peSave*rPE(m)+scGain*rSC(m)+clGain*rCL(m))/12;cum.push(acc);}
     const big=document.getElementById('oBig');
@@ -1374,7 +1442,7 @@ function simulator(c){
     document.getElementById('cvNow').textContent=`${pct(c.ep,1)} · ${kk(c.ebit)}`;
     document.getElementById('cvNew').textContent=`${pct(epNew,1)} · ${kk(ebNew)}`;
     document.getElementById('tl').innerHTML=timelineSVG(cum);
-    document.getElementById('brk').innerHTML=[['Menu e food cost',fcSave],['Scontrino medio',scGain],['Clienti in più',clGain],['Turni ottimizzati',peSave]].map(x=>`<div><small>${x[0]}</small><b class="num">+${eur(x[1])}</b></div>`).join('');
+    document.getElementById('brk').innerHTML=(isM?[['Clienti in più al mese',S.incasso/S.scontrino*cl,'n'],['Margine in più al mese',clGain/12]]:[['Menu e food cost',fcSave],['Scontrino medio',scGain],['Clienti in più',clGain],['Turni ottimizzati',peSave]]).map(x=>x[2]==='n'?`<div><small>${x[0]}</small><b class="num">+${dot(x[1])}</b></div>`:`<div><small>${x[0]}</small><b class="num">+${eur(x[1])}</b></div>`).join('');
   }
   paint();
 }
@@ -1386,14 +1454,14 @@ function lever(k,title,sub,min,max,step,val,fmt,lo,hi){
 function timelineSVG(cum){
   const W=400,H=200,l=4,r=4,t=62,b=168, max=Math.max(cum[11],1);
   const x=i=>l+(i)/(11)*(W-l-r), y=v=>b-(v/max)*(b-t);
-  const bands=[[0,1.5,'Numeri'],[1.5,3.5,'Menu'],[3.5,11,'Marketing']];
-  let out=bands.map((bd,i)=>`<rect x="${x(bd[0])}" y="${t-24}" width="${x(bd[1])-x(bd[0])}" height="${b-t+24}" fill="${i%2?'rgba(255,255,255,.04)':'rgba(255,255,255,.0)'}"/><text class="ph" x="${x(bd[0])+6}" y="${t-10}">${bd[2]}</text>`).join('');
+  const bands=isM?[[0,11,'Marketing']]:[[0,1.5,'Numeri'],[1.5,3.5,'Menu'],[3.5,11,'Marketing']];
+  let out=bands.map((bd,i)=>`<rect x="${x(bd[0])}" y="${t-24}" width="${x(bd[1])-x(bd[0])}" height="${b-t+24}" fill="${i%2?'rgba(217,10,15,.04)':'rgba(217,10,15,0)'}"/><text class="ph" x="${x(bd[0])+6}" y="${t-10}">${bd[2]}</text>`).join('');
   let d=`M${x(0)},${b}`; cum.forEach((v,i)=>d+=` L${x(i)},${y(v)}`); d+=` L${x(11)},${b} Z`;
   let ln=''; cum.forEach((v,i)=>ln+=(i?' L':'M')+x(i)+','+y(v));
-  out+=`<defs><linearGradient id="tlg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF3A3F" stop-opacity=".45"/><stop offset="1" stop-color="#FF3A3F" stop-opacity="0"/></linearGradient></defs>`;
+  out+=`<defs><linearGradient id="tlg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D90A0F" stop-opacity=".45"/><stop offset="1" stop-color="#D90A0F" stop-opacity="0"/></linearGradient></defs>`;
   out+=`<line x1="${l}" x2="${W-r}" y1="${b}" y2="${b}" stroke="var(--stage-line)"/>`;
-  out+=`<path d="${d}" fill="url(#tlg)"/><path d="${ln}" fill="none" stroke="#FF3A3F" stroke-width="2.5" stroke-linejoin="round"/>`;
-  out+=`<circle cx="${x(11)}" cy="${y(cum[11])}" r="5" fill="#FF3A3F" stroke="var(--stage)" stroke-width="2"/>`;
+  out+=`<path d="${d}" fill="url(#tlg)"/><path d="${ln}" fill="none" stroke="#D90A0F" stroke-width="2.5" stroke-linejoin="round"/>`;
+  out+=`<circle cx="${x(11)}" cy="${y(cum[11])}" r="5" fill="#D90A0F" stroke="var(--stage)" stroke-width="2"/>`;
   out+=`<text x="${l}" y="16" style="fill:var(--stage-ink);font-family:var(--f-body);font-weight:700;font-size:14px">Primo anno: +${eur(cum[11])}</text><text x="${l}" y="32">margine in più accumulato, mese per mese</text>`;
   [0,3,6,9,11].forEach(i=>out+=`<text x="${x(i)}" y="${b+20}" text-anchor="${i===0?'start':i===11?'end':'middle'}">${i===0?'Mese 1':i+1}</text>`);
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Margine in più accumulato nel primo anno">${out}</svg>`;
